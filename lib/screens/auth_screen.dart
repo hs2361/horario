@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import '../providers/auth_service.dart';
 import '../widgets/sign_in_form.dart';
 import '../widgets/sign_up_form.dart';
 
@@ -42,24 +39,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _showErrorDialog(BuildContext context, String title, String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('OK'),
-            )
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,72 +70,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Spacer(),
           //auth functionality...
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              //Sign in with google button
-              Container(
-                width: MediaQuery.of(context).size.width * 0.6,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    primary: Color(0xDEFFFFFF),
-                    onPrimary: Colors.black,
-                  ),
-                  onPressed: () async {
-                    try {
-                      await Provider.of<AuthService>(context, listen: false)
-                          .signInWithGoogle();
-                    } on PlatformException catch (error) {
-                      var errorMessage = 'Authentication error';
-                      if (error.message?.contains('sign_in_canceled') ??
-                          false ||
-                              (error.message?.contains('sign_in_failed') ??
-                                  false)) {
-                        errorMessage = 'Sign in failed, try again later';
-                      } else if (error.message?.contains('network_error') ??
-                          false) {
-                        errorMessage = 'Sign in failed due to network issue';
-                      }
-                      _showErrorDialog(
-                          context, "Something went wrong", errorMessage);
-                    } catch (error) {
-                      // Navigator.of(context).pop();
-                      const errorMessage =
-                          'Could not sign you in, please try again later.';
-                      _showErrorDialog(
-                          context, "Something went wrong", errorMessage);
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset(
-                        "assets/images/google_logo.png",
-                        scale: 20,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        'Sign In With Google',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[

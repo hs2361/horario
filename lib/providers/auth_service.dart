@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 enum AuthState { SignedIn, NotVerified, SignedUp, SignedOut }
 
@@ -18,28 +17,6 @@ class AuthService with ChangeNotifier {
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
-  }
-
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    print("sign in with google");
-    GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: <String>['email'],
-    );
-
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    // Create a new credential
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   Future<AuthState> emailSignIn(
@@ -78,10 +55,6 @@ class AuthService with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       throw e;
     }
-  }
-
-  Future<bool> get isGoogleUser async {
-    return await GoogleSignIn().isSignedIn();
   }
 
   String get userName {
