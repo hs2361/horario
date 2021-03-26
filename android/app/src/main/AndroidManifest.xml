@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.horario">
+    package="com.horario.horario">
    <application
         android:label="horario"
         android:icon="@mipmap/ic_launcher">

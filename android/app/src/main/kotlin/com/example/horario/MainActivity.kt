@@ -1,4 +1,4 @@
-package com.example.horario
+package com.horario.horario
 
 import io.flutter.embedding.android.FlutterActivity
 
