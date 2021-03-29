@@ -34,6 +34,7 @@ dependencies:
   provider: ^5.0.0
 
 dev_dependencies:
+  lint: ^1.5.3
   flutter_test:
     sdk: flutter
 

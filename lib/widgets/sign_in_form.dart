@@ -12,7 +12,7 @@ class SignInForm extends StatefulWidget {
 class _SignInFormState extends State<SignInForm> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   var _isLoading = false;
-  Map<String, String> _authData = {
+  final Map<String, String> _authData = {
     'email': '',
     'password': '',
   };
@@ -27,7 +27,7 @@ class _SignInFormState extends State<SignInForm> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('OK'),
+              child: const Text('OK'),
             )
           ],
         );
@@ -43,7 +43,7 @@ class _SignInFormState extends State<SignInForm> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Forgot your password?"),
+          title: const Text("Forgot your password?"),
           content: Form(
             key: _formKey,
             child: Theme(
@@ -60,7 +60,7 @@ class _SignInFormState extends State<SignInForm> {
                     return "Enter a valid email address";
                   }
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Email",
                 ),
                 textInputAction: TextInputAction.done,
@@ -82,7 +82,7 @@ class _SignInFormState extends State<SignInForm> {
                     );
                   } on FirebaseAuthException catch (error) {
                     Navigator.of(context).pop();
-                    String errorMessage = getMessageFromErrorCode(error);
+                    final String errorMessage = getMessageFromErrorCode(error);
                     _showErrorDialog(
                       "Something went wrong",
                       errorMessage,
@@ -91,7 +91,7 @@ class _SignInFormState extends State<SignInForm> {
                   }
                 }
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             )
           ],
         );
@@ -109,11 +109,11 @@ class _SignInFormState extends State<SignInForm> {
       _isLoading = true;
     });
     try {
-      AuthState res =
-          (await Provider.of<AuthService>(context, listen: false).emailSignIn(
+      final AuthState res =
+          await Provider.of<AuthService>(context, listen: false).emailSignIn(
         email: _authData['email'] ?? "",
         password: _authData['password'] ?? "",
-      ));
+      );
 
       if (res == AuthState.SignedIn) {
         Navigator.of(context).pop();
@@ -125,8 +125,7 @@ class _SignInFormState extends State<SignInForm> {
         );
       }
     } on FirebaseAuthException catch (error) {
-      print(error);
-      String errorMessage = getMessageFromErrorCode(error);
+      final String errorMessage = getMessageFromErrorCode(error);
       _showErrorDialog(
         "Something went wrong",
         errorMessage,
@@ -153,9 +152,9 @@ class _SignInFormState extends State<SignInForm> {
     final deviceSize = MediaQuery.of(context).size;
     return Container(
       height: 250,
-      constraints: BoxConstraints(minHeight: 250),
+      constraints: const BoxConstraints(minHeight: 250),
       width: deviceSize.width * 0.85,
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -166,7 +165,7 @@ class _SignInFormState extends State<SignInForm> {
                 data: Theme.of(context)
                     .copyWith(primaryColor: Theme.of(context).accentColor),
                 child: TextFormField(
-                  decoration: InputDecoration(labelText: 'E-Mail'),
+                  decoration: const InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
                   autofocus: true,
                   textInputAction: TextInputAction.next,
@@ -189,7 +188,7 @@ class _SignInFormState extends State<SignInForm> {
                 data: Theme.of(context)
                     .copyWith(primaryColor: Theme.of(context).accentColor),
                 child: TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: const InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   focusNode: _passwordFocusNode,
                   textInputAction: TextInputAction.done,
@@ -207,26 +206,26 @@ class _SignInFormState extends State<SignInForm> {
               ),
               TextButton(
                 style: TextButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 3),
+                  padding: const EdgeInsets.symmetric(vertical: 3),
                 ),
-                child: Text("Forgot password?"),
                 onPressed: _showForgotPasswordDialog,
+                child: const Text("Forgot password?"),
               ),
               if (_isLoading)
-                CircularProgressIndicator()
+                const CircularProgressIndicator()
               else
                 ElevatedButton(
-                  child: Text('SIGN IN'),
                   onPressed: _submit,
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30.0, vertical: 8.0),
                     primary: Colors.white,
                     onPrimary: Colors.black,
                   ),
+                  child: const Text('SIGN IN'),
                 ),
             ],
           ),

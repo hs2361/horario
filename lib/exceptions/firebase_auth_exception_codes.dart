@@ -13,8 +13,6 @@ String getMessageFromErrorCode(FirebaseAuthException error) {
       return "User disabled.";
     case "operation-not-allowed":
       return "Too many requests to log into this account.";
-    case "operation-not-allowed":
-      return "Server error, please try again later.";
     case "invalid-email":
       return "Email address is invalid.";
     default:

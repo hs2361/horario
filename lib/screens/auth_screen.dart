@@ -14,10 +14,10 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       builder: (context) => AlertDialog(
         //dialog window for authentication forms
-        titlePadding: EdgeInsets.fromLTRB(20, 20, 0, 0),
-        contentPadding: EdgeInsets.symmetric(horizontal: 5),
+        titlePadding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 5),
         title: Text(isSigningIn ? 'Sign In' : 'Sign Up'),
-        actionsPadding: EdgeInsets.only(right: 15, bottom: 5),
+        actionsPadding: const EdgeInsets.only(right: 15, bottom: 5),
         content: isSigningIn ? SignInForm() : SignUpForm(),
         actions: <Widget>[
           GestureDetector(
@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
             },
             child: Text(
               isSigningIn ? 'Sign Up instead' : 'Sign In instead',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
               ),
             ),
@@ -47,19 +47,19 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Spacer(),
+          const Spacer(),
           //auth screen title...
           Text(
             'Welcome to'.toUpperCase(),
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontFamily: 'Montserrat',
             ),
           ),
           RichText(
             textAlign: TextAlign.center,
-            text: new TextSpan(
+            text: const TextSpan(
               text: 'HORARIO',
               style: TextStyle(
                 fontSize: 45,
@@ -68,21 +68,22 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          Spacer(),
+          const Spacer(),
           //auth functionality...
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               //Sign in with email button
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width * 0.6,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    primary: Color(0xDEFFFFFF),
+                    primary: const Color(0xDEFFFFFF),
                     onPrimary: Colors.black,
                   ),
                   onPressed: () {
@@ -93,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
+                    children: const <Widget>[
                       Icon(Icons.email),
                       SizedBox(
                         width: 10,
@@ -111,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 90,
           ),
         ],

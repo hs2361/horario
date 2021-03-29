@@ -24,6 +24,9 @@ class _MainDrawerState extends State<MainDrawer> {
     // Creates a tile in the drawer
 
     return InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed(route);
+      },
       child: ListTile(
         leading: Icon(
           icon,
@@ -31,9 +34,6 @@ class _MainDrawerState extends State<MainDrawer> {
         ),
         title: Text(title),
       ),
-      onTap: () {
-        Navigator.of(context).pushNamed(route);
-      },
     );
   }
 
@@ -43,7 +43,8 @@ class _MainDrawerState extends State<MainDrawer> {
   @override
   void didChangeDependencies() {
     photoUrl = Provider.of<AuthService>(context, listen: true).photoUrl ?? '';
-    String name = Provider.of<AuthService>(context, listen: true).userName;
+    final String name =
+        Provider.of<AuthService>(context, listen: true).userName;
     userName = name;
     super.didChangeDependencies();
   }
@@ -62,7 +63,7 @@ class _MainDrawerState extends State<MainDrawer> {
               child: Stack(
                 alignment: Alignment.bottomCenter,
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                     height: 200,
                     width: 100,
                     child: FittedBox(
@@ -73,18 +74,18 @@ class _MainDrawerState extends State<MainDrawer> {
                   ListTile(
                     leading: CircleAvatar(
                       backgroundImage: (photoUrl == ''
-                          ? AssetImage(
+                          ? const AssetImage(
                               'assets/images/default_pfp.png',
                             )
                           : NetworkImage(photoUrl)) as ImageProvider,
                     ),
                     title: Text(
                       userName,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
-                    subtitle: Text(
+                    subtitle: const Text(
                       'profile',
                       style: TextStyle(
                         color: Colors.white,
@@ -94,7 +95,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             buildDrawerTile(

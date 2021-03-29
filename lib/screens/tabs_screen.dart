@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/main_drawer.dart';
-import './schedule_screen.dart';
-import './notes_screen.dart';
 import './group_screen.dart';
+import './notes_screen.dart';
+import './schedule_screen.dart';
 
 // Screen that displays all the tabs
 class TabsScreen extends StatefulWidget {
   // Arguments => selected: The index of the selected tab to be highlighted
   static const routeName = '/tabs-screen';
   final int selected;
-  TabsScreen(this.selected);
+  const TabsScreen(this.selected);
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  late List<dynamic> _pages;
+  late List<Widget> _pages;
   late int _selectedIndex;
   bool _isInit = true;
 
-  late List<dynamic> _tabColors;
+  late List<Color> _tabColors;
 
   void setSelectedColor(BuildContext context) {
     // function that sets the tab of index 'selected' as the accent colour
@@ -120,8 +120,8 @@ class _TabsScreenState extends State<TabsScreen> {
         elevation: 0.0,
         backgroundColor: Theme.of(context).primaryColor,
         title: RichText(
-          text: new TextSpan(children: <TextSpan>[
-            new TextSpan(
+          text: TextSpan(children: <TextSpan>[
+            TextSpan(
               text: 'HORA',
               style: TextStyle(
                 fontSize: 20,
@@ -130,7 +130,7 @@ class _TabsScreenState extends State<TabsScreen> {
                 color: Theme.of(context).textTheme.bodyText1?.color,
               ),
             ),
-            new TextSpan(
+            TextSpan(
               text: 'RIO',
               style: TextStyle(
                 fontSize: 20,
@@ -144,7 +144,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           boxShadow: [
             BoxShadow(
               blurRadius: 30,
@@ -154,16 +154,13 @@ class _TabsScreenState extends State<TabsScreen> {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(0), topRight: Radius.circular(0)),
           child: BottomAppBar(
             color: Theme.of(context).brightness == Brightness.dark
                 ? Theme.of(context).cardColor
                 : Theme.of(context).accentColor,
             notchMargin: -22,
+            shape: const CircularNotchedRectangle(),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 navBtn(0, Icons.schedule, 'Schedule', () {
@@ -186,7 +183,6 @@ class _TabsScreenState extends State<TabsScreen> {
                 }),
               ],
             ),
-            shape: CircularNotchedRectangle(),
           ),
         ),
       ),

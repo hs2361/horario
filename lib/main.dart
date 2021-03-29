@@ -22,12 +22,12 @@ class _MyAppState extends State<MyApp> {
   ThemeData theme = ThemeData(
     // dark theme
     brightness: Brightness.dark,
-    primaryColor: Color(0xFF121212),
-    cardColor: Color(0xFF252525),
+    primaryColor: const Color(0xFF121212),
+    cardColor: const Color(0xFF252525),
     errorColor: Colors.redAccent,
     accentColor: Colors.blueAccent,
     unselectedWidgetColor: Colors.grey,
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       textTheme: TextTheme(
         headline6: TextStyle(
           fontFamily: 'Montserrat',
@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     ),
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       bodyText1: TextStyle(
         color: Colors.white,
       ),
@@ -74,11 +74,12 @@ class _MyAppState extends State<MyApp> {
                 theme: theme,
                 home: HomeScreen(),
               );
-            } else
+            } else {
               return MaterialApp(
                 theme: theme,
                 home: LoginScreen(),
               );
+            }
           }
         },
       ),

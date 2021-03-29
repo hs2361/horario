@@ -16,16 +16,16 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, auth, _) => MaterialApp(
         title: 'Horario',
         // setting home screen as tasks screen
-        home: TabsScreen(0),
+        home: const TabsScreen(0),
         theme: ThemeData(
           // dark theme
           brightness: Brightness.dark,
-          primaryColor: Color(0xFF121212),
-          cardColor: Color(0xFF252525),
+          primaryColor: const Color(0xFF121212),
+          cardColor: const Color(0xFF252525),
           errorColor: Colors.redAccent,
           accentColor: Colors.blueAccent,
           unselectedWidgetColor: Colors.grey,
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
             textTheme: TextTheme(
               headline6: TextStyle(
                 fontFamily: 'Montserrat',
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
             bodyText1: TextStyle(
               color: Colors.white,
             ),
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onGenerateRoute: (settings) {
           // passing arguments to routes
           if (settings.name == TabsScreen.routeName) {
-            final int selected = settings.arguments as int;
+            final int selected = (settings.arguments ?? 0) as int;
             return MaterialPageRoute(builder: (context) {
               return TabsScreen(selected);
             });
