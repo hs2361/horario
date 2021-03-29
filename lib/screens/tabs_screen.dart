@@ -166,27 +166,24 @@ class _TabsScreenState extends State<TabsScreen> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                navBtn(0, Icons.class_, 'Schedule', () {
+                navBtn(0, Icons.schedule, 'Schedule', () {
                   setState(() {
                     _selectedIndex = 0;
                     setSelectedColor(context);
                   });
                 }),
-                navBtn(1, Icons.assignment, 'Group', () {
+                navBtn(1, Icons.group, 'Group', () {
                   setState(() {
                     _selectedIndex = 1;
                     setSelectedColor(context);
                   });
                 }),
-                navBtn(2, Icons.group, 'Notes', () {
+                navBtn(2, Icons.note_rounded, 'Notes', () {
                   setState(() {
                     _selectedIndex = 2;
                     setSelectedColor(context);
                   });
                 }),
-                SizedBox(
-                  width: 75,
-                ),
               ],
             ),
             shape: CircularNotchedRectangle(),
@@ -194,22 +191,6 @@ class _TabsScreenState extends State<TabsScreen> {
         ),
       ),
       // Plus button
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        child: FloatingActionButton(
-            child: Icon(
-              Icons.add,
-              size: 35,
-            ),
-            backgroundColor: Theme.of(context).brightness == Brightness.dark
-                ? Theme.of(context).cardColor
-                : Theme.of(context).accentColor,
-            foregroundColor: Theme.of(context).brightness == Brightness.dark
-                ? Theme.of(context).accentColor
-                : Theme.of(context).cardColor,
-            onPressed: () => {}),
-      ),
     );
   }
 }
