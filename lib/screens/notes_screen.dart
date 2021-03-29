@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class ClassesScreen extends StatelessWidget {
+class NotesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("Classes"),
+      child: Text("Notes Here"),
     );
   }
 }

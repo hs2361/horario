@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/main_drawer.dart';
-import './classes_screen.dart';
-import './assignments_screen.dart';
+import './schedule_screen.dart';
+import './notes_screen.dart';
 import './group_screen.dart';
 
 // Screen that displays all the tabs
@@ -84,9 +84,9 @@ class _TabsScreenState extends State<TabsScreen> {
     _selectedIndex = widget.selected;
 
     _pages = [
-      ClassesScreen(),
-      AssignmentsScreen(),
+      ScheduleScreen(),
       GroupScreen(),
+      NotesScreen(),
     ];
 
     super.initState();
@@ -166,19 +166,19 @@ class _TabsScreenState extends State<TabsScreen> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                navBtn(0, Icons.class_, 'Classes', () {
+                navBtn(0, Icons.class_, 'Schedule', () {
                   setState(() {
                     _selectedIndex = 0;
                     setSelectedColor(context);
                   });
                 }),
-                navBtn(1, Icons.assignment, 'Projects', () {
+                navBtn(1, Icons.assignment, 'Group', () {
                   setState(() {
                     _selectedIndex = 1;
                     setSelectedColor(context);
                   });
                 }),
-                navBtn(2, Icons.group, 'Group', () {
+                navBtn(2, Icons.group, 'Notes', () {
                   setState(() {
                     _selectedIndex = 2;
                     setSelectedColor(context);
