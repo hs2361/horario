@@ -5,7 +5,7 @@ import 'package:tuple/tuple.dart';
 
 import './group_chat_class.dart';
 
-class ChatCollection with ChangeNotifier {
+class GroupChatCollection with ChangeNotifier {
   //dummy data for testing purposes
   final List<GroupChatClass> _chats = [
     GroupChatClass(
@@ -48,7 +48,7 @@ class ChatCollection with ChangeNotifier {
 
   List<GroupChatClass> get chat {
     final List<GroupChatClass> currchat = _chats;
-    
+
     return currchat;
   }
 }

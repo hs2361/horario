@@ -86,10 +86,10 @@ class _GroupScreenState extends State<GroupScreen> {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: Provider.of<ChatCollection>(context).chat.length,
+              itemCount: Provider.of<GroupChatCollection>(context).chat.length,
               itemBuilder: (context, index) {
                 final List<GroupChatClass> chat =
-                    Provider.of<ChatCollection>(context).chat;
+                    Provider.of<GroupChatCollection>(context).chat;
                 return GroupChatCard(chat[index]);
               },
             ),
