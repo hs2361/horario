@@ -8,12 +8,14 @@ class Classes with ChangeNotifier {
   //dummy data for testing purposes
   final List<Class> _classes = [
     Class(
-        subject: "Homework",
-        deadline: DateTime(2021, 3, 31),
-        color: Colors.green),
+      subject: "Homework",
+      deadline: DateTime(2021, 3, 31),
+      color: Colors.green,
+    ),
     Class(
       subject: "Physics",
       color: Colors.pink,
+      link: "http://www.google.com",
       schedule: [
         const [
           Tuple2(TimeOfDay(hour: 10, minute: 0), TimeOfDay(hour: 12, minute: 0))
@@ -79,21 +81,19 @@ class Classes with ChangeNotifier {
         for (int day = 0; day < 7; day++) {
           if ((class_.schedule?[day] ?? []).isNotEmpty) {
             final Class scheduleClass = Class(
-              subject: class_.subject,
-              link: class_.link,
-              schedule: [class_.schedule?[day] ?? []],
-              color: class_.color
-            );
+                subject: class_.subject,
+                link: class_.link,
+                schedule: [class_.schedule?[day] ?? []],
+                color: class_.color);
             schedule[day].add(scheduleClass);
           }
         }
       } else {
         final Class scheduleAssignment = Class(
-          subject: class_.subject,
-          link: class_.link,
-          deadline: class_.deadline,
-          color: class_.color
-        );
+            subject: class_.subject,
+            link: class_.link,
+            deadline: class_.deadline,
+            color: class_.color);
         schedule[((class_.deadline?.weekday ?? 1) - 1)].add(scheduleAssignment);
       }
     }
