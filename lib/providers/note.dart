@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 
-class GroupChatClass with ChangeNotifier {
+class Note with ChangeNotifier {
   String? user;
   int? messageType;
   DateTime? sentTime;
   String? notesName;
   String? messageBody;
   Color color;
+  String? subject;
+  String? filename;
 
-  GroupChatClass({
+  Note({
     this.user = "",
     this.messageType,
     this.sentTime,
+    this.subject,
+    this.filename,
     this.notesName,
     this.messageBody,
     this.color = Colors.blueAccent,

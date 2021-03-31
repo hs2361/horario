@@ -3,51 +3,58 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tuple/tuple.dart';
 
-import './group_chat_class.dart';
+import 'note.dart';
 
-class GroupChatCollection with ChangeNotifier {
+class Notes with ChangeNotifier {
   //dummy data for testing purposes
-  final List<GroupChatClass> _chats = [
-    GroupChatClass(
-      notesName: "Physics",
+  final List<Note> _notes = [
+    Note(
+      notesName: "Physics lesson 1",
       color: Colors.pink,
       user: "UID",
       messageType: 0,
-      messageBody: "Notes chahiye"
+      messageBody: "Notes chahiye",
+      subject: "Physics"
     ),
-    GroupChatClass(
-      notesName: "Chemistry",
+    Note(
+      notesName: "Chemistry lesson 2",
       color: Colors.purple,
       user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
       messageType: 1,
-      messageBody: "Notes lele"
+      messageBody: "Notes lele",
+      subject: "Chemistry",
+      filename: "chem2.pdf"
     )
   ];
 
   //Real code
-  void addChat({
+  void addNote({
     String? user,
     String? notesName,
     DateTime? currTime,
     int? messageType,
     String? messageBody,
     Color color = Colors.blueAccent,
+    String? subject,
+    String? filename,
   }) {
-    _chats.add(
-      GroupChatClass(
+    _notes.add(
+      Note(
         user: user,
         notesName: notesName,
         sentTime: currTime,
         messageType: messageType,
         messageBody: messageBody,
         color: color,
+        subject: subject,
+        filename: filename
       ),
     );
     notifyListeners();
   }
 
-  List<GroupChatClass> get chat {
-    final List<GroupChatClass> currchat = _chats;
+  List<Note> get groupchat {
+    final List<Note> currchat = _notes;
 
     return currchat;
   }
