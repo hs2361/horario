@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:horario/providers/class.dart';
+import 'package:horario/providers/classes.dart';
+import 'package:horario/widgets/class_card.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ScheduleScreen extends StatefulWidget {
   @override
@@ -10,9 +14,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   DateTime today = DateTime.now();
   int selectedDay = DateTime.now().weekday;
 
-  // ignore: avoid_positional_boolean_parameters
-  ClipRRect weekdayButton(BuildContext context, DateTime day, bool selected) =>
-      ClipRRect(
+  ClipRRect weekdayButton(BuildContext context, DateTime day) => ClipRRect(
         borderRadius: BorderRadius.circular(25),
         child: SizedBox(
           width: 50,
@@ -21,7 +23,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             style: ElevatedButton.styleFrom(
                 primary: Theme.of(context)
                     .accentColor
-                    .withAlpha(selected ? 255 : 60)),
+                    .withAlpha(selectedDay == day.weekday ? 255 : 60)),
             onPressed: () {
               setState(() {
                 selectedDay = day.weekday;
@@ -35,12 +37,31 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         ),
       );
 
+  void showNewClassForm(BuildContext context) {
+    // Arguments => context: The context for the modal sheet to be created in
+    //
+    // Opens up the NewTask modal sheet to add a new task
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: true,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          behavior: HitTestBehavior.opaque,
+          child: Container(),
+        );
+      },
+    );
+  }
+
   Widget _offsetPopup() => PopupMenuButton<int>(
         itemBuilder: (context) => [
           PopupMenuItem(
             value: 1,
             child: InkWell(
-              onTap: () {},
+              onTap: () => showNewClassForm(context),
               child: const Text(
                 "Add Class",
                 style: TextStyle(
@@ -95,9 +116,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 weekdayButton(
                   context,
                   today.subtract(Duration(days: today.weekday - day)),
-                  selectedDay == day,
-                )
+                ),
             ],
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: Provider.of<Classes>(context)
+                  .schedule[selectedDay - 1]
+                  .length,
+              itemBuilder: (context, index) {
+                final List<Class> classes =
+                    Provider.of<Classes>(context).schedule[selectedDay - 1];
+                return ClassCard(classes[index]);
+              },
+            ),
           )
         ],
       ),
