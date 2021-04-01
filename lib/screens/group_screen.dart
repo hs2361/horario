@@ -81,19 +81,13 @@ class _GroupScreenState extends State<GroupScreen> {
         width: 75.0,
         child: _offsetPopup(),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: Provider.of<Notes>(context).groupchat.length,
-              itemBuilder: (context, index) {
-                final List<Note> chat = Provider.of<Notes>(context).groupchat;
-                return GroupChatCard(chat[index]);
-              },
-            ),
-          )
-        ],
+      body: ListView.builder(
+        shrinkWrap: true,
+        itemCount: Provider.of<Notes>(context).groupchat.length,
+        itemBuilder: (context, index) {
+          final List<Note> chat = Provider.of<Notes>(context).groupchat;
+          return GroupChatCard(chat[index]);
+        },
       ),
     );
   }
@@ -108,17 +102,94 @@ class GroupChatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String timeString;
-    timeString = DateFormat('HH:MM').format(curr_chat_msg.sentTime ?? DateTime.now());
-    return Container(
-      padding: const EdgeInsets.all(8),
-      height: 100,
-      child: Card(
-        color: curr_chat_msg.color,
-        child: ListTile(
-          title: Text(curr_chat_msg.notesName ?? ""),
-          subtitle: Text(timeString),
+    timeString =
+        DateFormat('HH:MM').format(curr_chat_msg.sentTime ?? DateTime.now());
+    Card currCard = Card();
+
+    //Get userID from firebase here
+    String? currUser = "2zZWzj2gOuOz2XrJIifcoTMqt3C3";
+    Alignment currAlignment = Alignment.centerLeft;
+    if (currUser == curr_chat_msg.user) {
+      currAlignment = Alignment.centerRight;
+    }
+
+    if (curr_chat_msg.messageType == 1) {
+      //Notes have been Uploaded card
+      currCard = Card(
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.file_download),
+              //TODO:Concatenated but not being displayed
+              title: Text(curr_chat_msg.notesName??"" + " Uploaded"),
+              subtitle: Text(
+                "Subject: ${curr_chat_msg.subject??""}",
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Text(
+                curr_chat_msg.messageBody??"",
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.left,
+              ),
+            ),
+ 
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Text(
+                  timeString,
+                  style: const TextStyle(color: Colors.white),
+                  
+                ),
+              ),
+
+          ],
         ),
-      ),
+      );
+    } else {
+      // Request for notes card
+      currCard = Card(
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(curr_chat_msg.notesName??"" + " Requested"),
+              subtitle: Text(
+                "Subject: ${curr_chat_msg.subject??""}",
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Text(
+                curr_chat_msg.messageBody??"",
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.left,
+              ),
+            ),
+ 
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Text(
+                  timeString,
+                  style: const TextStyle(color: Colors.white),
+                  
+                ),
+              ),
+
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(5),
+      width: 200,
+      alignment: currAlignment,
+      child: currCard, //currAlignment,
     );
   }
 }

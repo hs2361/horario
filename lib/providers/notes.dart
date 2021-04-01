@@ -24,6 +24,40 @@ class Notes with ChangeNotifier {
       messageBody: "Notes lele",
       subject: "Chemistry",
       filename: "chem2.pdf"
+    ),
+        Note(
+      notesName: "Physics lesson 1",
+      color: Colors.pink,
+      user: "UID",
+      messageType: 0,
+      messageBody: "Notes chahiye",
+      subject: "Physics"
+    ),
+    Note(
+      notesName: "Chemistry lesson 2",
+      color: Colors.purple,
+      user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
+      messageType: 1,
+      messageBody: "Notes lele",
+      subject: "Chemistry",
+      filename: "chem2.pdf"
+    ),
+        Note(
+      notesName: "Physics lesson 1",
+      color: Colors.pink,
+      user: "UID",
+      messageType: 0,
+      messageBody: "Notes chahiye",
+      subject: "Physics"
+    ),
+    Note(
+      notesName: "Chemistry lesson 2",
+      color: Colors.purple,
+      user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
+      messageType: 1,
+      messageBody: "Notes lele",
+      subject: "Chemistry",
+      filename: "chem2.pdf"
     )
   ];
 
