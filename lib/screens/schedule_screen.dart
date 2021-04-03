@@ -15,6 +15,7 @@ class ScheduleScreen extends StatefulWidget {
 class _ScheduleScreenState extends State<ScheduleScreen> {
   DateTime today = DateTime.now();
   int selectedDay = DateTime.now().weekday;
+  bool _isLoading = true;
 
   ClipRRect weekdayButton(BuildContext context, DateTime day) => ClipRRect(
         borderRadius: BorderRadius.circular(25),
@@ -88,43 +89,57 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           }
         },
       );
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await Provider.of<Classes>(context, listen: false).fetchFromFirestore();
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      floatingActionButton: SizedBox(
-        height: 75.0,
-        width: 75.0,
-        child: _showFABPopupMenu(),
-      ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              for (int day = 1; day <= 7; day++)
-                weekdayButton(
-                  context,
-                  today.subtract(Duration(days: today.weekday - day)),
-                ),
-            ],
-          ),
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: Provider.of<Classes>(context)
-                  .schedule[selectedDay - 1]
-                  .length,
-              itemBuilder: (context, index) {
-                final List<Class> classes =
-                    Provider.of<Classes>(context).schedule[selectedDay - 1];
-                return ClassCard(classes[index]);
-              },
-            ),
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
           )
-        ],
-      ),
-    );
+        : Scaffold(
+            backgroundColor: Theme.of(context).primaryColor,
+            floatingActionButton: SizedBox(
+              height: 75.0,
+              width: 75.0,
+              child: _showFABPopupMenu(),
+            ),
+            body: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    for (int day = 1; day <= 7; day++)
+                      weekdayButton(
+                        context,
+                        today.subtract(Duration(days: today.weekday - day)),
+                      ),
+                  ],
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: Provider.of<Classes>(context)
+                        .schedule[selectedDay - 1]
+                        .length,
+                    itemBuilder: (context, index) {
+                      final List<Class> classes = Provider.of<Classes>(context)
+                          .schedule[selectedDay - 1];
+                      return ClassCard(classes[index]);
+                    },
+                  ),
+                )
+              ],
+            ),
+          );
   }
 }
