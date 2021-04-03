@@ -12,7 +12,7 @@ class ClassCard extends StatelessWidget {
     String timeString;
     if (c.schedule != null) {
       timeString =
-          "${(c.schedule ?? [])[0][0].item1.format(context)} - ${(c.schedule ?? [])[0][0].item2.format(context)}";
+          "${(c.schedule ?? [])[0].start.format(context)} - ${(c.schedule ?? [])[0].end.format(context)}";
     } else {
       timeString =
           "Due ${DateFormat('HH:MM').format(c.deadline ?? DateTime.now())}";
