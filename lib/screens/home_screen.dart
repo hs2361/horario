@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:horario/widgets/new_notes_request.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_service.dart';
@@ -53,7 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         routes: {
           ProfileScreen.routeName: (_) => ProfileScreen(auth),
-          NewClass.routeName: (_) => NewClass()
+          NewClass.routeName: (_) => NewClass(),
+          NewNotesRequest.routeName: (_) => NewNotesRequest(),
         },
         onGenerateRoute: (settings) {
           // passing arguments to routes

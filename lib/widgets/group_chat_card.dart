@@ -9,18 +9,18 @@ class GroupChatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String timeString;
-    // timeString = DateFormat('HH:MM').format(curr_chat_msg.sentTime ?? DateTime.now());
+    // TODO: timeString = DateFormat('HH:MM').format(curr_chat_msg.sentTime ?? DateTime.now());
     timeString = "11:04";
     Card currCard = Card();
 
-    //Get userID from firebase here
+    //TODO: Get userID from firebase here
     String? currUser = "2zZWzj2gOuOz2XrJIifcoTMqt3C3";
 
     return Container(
       width: 300,
       padding: EdgeInsets.only(left: 14, right: 14, top: 5, bottom: 5),
       child: Align(
-        alignment: (curr_chat_msg.user == currUser
+        alignment: (curr_chat_msg.user != currUser
             ? Alignment.topLeft
             : Alignment.topRight),
         child: Container(
@@ -35,7 +35,8 @@ class GroupChatCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                (curr_chat_msg.messageType == 1)
+                //TYPE 0 is request type 1 is Upload
+                (curr_chat_msg.messageType == 0)
                     ? "Request made for " + (curr_chat_msg.notesName ?? "")
                     : "Notes for " +
                         (curr_chat_msg.notesName ?? "") +

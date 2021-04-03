@@ -20,6 +20,18 @@ class _GroupScreenState extends State<GroupScreen> {
 
   }
 
+  bool _isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await Provider.of<Notes>(context, listen: false).fetchNotesFromFirestore();
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
   Widget _offsetPopup() => PopupMenuButton<int>(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         itemBuilder: (context) => [
@@ -66,7 +78,11 @@ class _GroupScreenState extends State<GroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        :Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       floatingActionButton: SizedBox(
         height: 75.0,

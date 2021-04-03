@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:horario/providers/classes.dart';
 import 'package:horario/providers/notes.dart';
 import 'package:provider/provider.dart';
 

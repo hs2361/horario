@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> {
           create: (_) => Note(),
         ),
         ChangeNotifierProvider(
-          create: (_) => Notes()
+          create: (ctx) => Notes(ctx)
         )
       ],
       child: StreamBuilder<User?>(
