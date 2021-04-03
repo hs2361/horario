@@ -99,7 +99,6 @@ class GroupChatCard extends StatelessWidget {
   const GroupChatCard(this.curr_chat_msg);
 
   @override
-  @override
   Widget build(BuildContext context) {
     String timeString;
     timeString =
@@ -108,88 +107,39 @@ class GroupChatCard extends StatelessWidget {
 
     //Get userID from firebase here
     String? currUser = "2zZWzj2gOuOz2XrJIifcoTMqt3C3";
-    Alignment currAlignment = Alignment.centerLeft;
-    if (currUser == curr_chat_msg.user) {
-      currAlignment = Alignment.centerRight;
-    }
-
-    if (curr_chat_msg.messageType == 1) {
-      //Notes have been Uploaded card
-      currCard = Card(
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.file_download),
-              //TODO:Concatenated but not being displayed
-              title: Text(curr_chat_msg.notesName??"" + " Uploaded"),
-              subtitle: Text(
-                "Subject: ${curr_chat_msg.subject??""}",
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Text(
-                curr_chat_msg.messageBody??"",
-                style: const TextStyle(color: Colors.white),
-                textAlign: TextAlign.left,
-              ),
-            ),
- 
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Text(
-                  timeString,
-                  style: const TextStyle(color: Colors.white),
-                  
-                ),
-              ),
-
-          ],
-        ),
-      );
-    } else {
-      // Request for notes card
-      currCard = Card(
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: [
-            ListTile(
-              title: Text(curr_chat_msg.notesName??"" + " Requested"),
-              subtitle: Text(
-                "Subject: ${curr_chat_msg.subject??""}",
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Text(
-                curr_chat_msg.messageBody??"",
-                style: const TextStyle(color: Colors.white),
-                textAlign: TextAlign.left,
-              ),
-            ),
- 
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Text(
-                  timeString,
-                  style: const TextStyle(color: Colors.white),
-                  
-                ),
-              ),
-
-          ],
-        ),
-      );
-    }
 
     return Container(
-      padding: const EdgeInsets.all(5),
-      width: 200,
-      alignment: currAlignment,
-      child: currCard, //currAlignment,
+      width: 300,
+      padding: EdgeInsets.only(left: 14,right: 14,top: 5,bottom: 5),
+      child: Align(
+        alignment: (curr_chat_msg.user == currUser?Alignment.topLeft:Alignment.topRight),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: (curr_chat_msg.user == currUser?Colors.blue[200]:Colors.grey.shade200),
+          ),
+          padding: EdgeInsets.all(8),
+          child:
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                (curr_chat_msg.messageType==1)?"Request made for " + (curr_chat_msg.notesName??""):"Notes for "+(curr_chat_msg.notesName??"")+" Uploaded", 
+                style: TextStyle(fontSize: 15,color: Colors.black),
+              
+              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+                  Text(curr_chat_msg.messageBody??"", style: TextStyle(fontSize: 15,color: Colors.black),),
+                  Text(timeString, style: TextStyle(fontSize: 15,color: Colors.black),),
+              //   ],
+              // ),
+
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -13,7 +13,7 @@ class Notes with ChangeNotifier {
       color: Colors.pink,
       user: "UID",
       messageType: 0,
-      messageBody: "Notes chahiye",
+      messageBody: "Notes chahiye plzplzplzplzp lzplzpzlp zplzpzllzpz lppzllzplzpl zpzlpzlpz lzplzplz zlpzlpzplz lzpoplzplzlp zlpzlplzp",
       subject: "Physics"
     ),
     Note(
