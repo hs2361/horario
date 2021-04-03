@@ -6,7 +6,6 @@ class Note with ChangeNotifier {
   DateTime? sentTime;
   String? notesName;
   String? messageBody;
-  Color color;
   String? subject;
   String? filename;
 
@@ -18,6 +17,5 @@ class Note with ChangeNotifier {
     this.filename,
     this.notesName,
     this.messageBody,
-    this.color = Colors.blueAccent,
   });
 }

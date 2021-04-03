@@ -9,7 +9,6 @@ class Notes with ChangeNotifier {
   final List<Note> _notes = [
     Note(
       notesName: "Physics lesson 1",
-      color: Colors.pink,
       user: "UID",
       messageType: 0,
       messageBody: "Notes chahiye plzplzplzplzp lzplzpzlp zplzpzllzpz lppzllzplzpl zpzlpzlpz lzplzplz zlpzlpzplz lzpoplzplzlp zlpzlplzp",
@@ -17,7 +16,6 @@ class Notes with ChangeNotifier {
     ),
     Note(
       notesName: "Chemistry lesson 2",
-      color: Colors.purple,
       user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
       messageType: 1,
       messageBody: "Notes lele",
@@ -26,7 +24,6 @@ class Notes with ChangeNotifier {
     ),
         Note(
       notesName: "Physics lesson 1",
-      color: Colors.pink,
       user: "UID",
       messageType: 0,
       messageBody: "Notes chahiye",
@@ -34,7 +31,6 @@ class Notes with ChangeNotifier {
     ),
     Note(
       notesName: "Chemistry lesson 2",
-      color: Colors.purple,
       user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
       messageType: 1,
       messageBody: "Notes lele",
@@ -43,7 +39,6 @@ class Notes with ChangeNotifier {
     ),
         Note(
       notesName: "Physics lesson 1",
-      color: Colors.pink,
       user: "UID",
       messageType: 0,
       messageBody: "Notes chahiye",
@@ -51,7 +46,6 @@ class Notes with ChangeNotifier {
     ),
     Note(
       notesName: "Chemistry lesson 2",
-      color: Colors.purple,
       user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
       messageType: 1,
       messageBody: "Notes lele",
@@ -67,7 +61,6 @@ class Notes with ChangeNotifier {
     DateTime? currTime,
     int? messageType,
     String? messageBody,
-    Color color = Colors.blueAccent,
     String? subject,
     String? filename,
   }) {
@@ -78,7 +71,6 @@ class Notes with ChangeNotifier {
         sentTime: currTime,
         messageType: messageType,
         messageBody: messageBody,
-        color: color,
         subject: subject,
         filename: filename
       ),
