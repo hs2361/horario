@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:horario/providers/auth_service.dart';
+
+import '../providers/auth_service.dart';
+import '../widgets/new_class.dart';
 import './profile_screen.dart';
 import './tabs_screen.dart';
 
@@ -51,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         routes: {
           ProfileScreen.routeName: (_) => ProfileScreen(auth),
+          NewClass.routeName: (_) => NewClass()
         },
         onGenerateRoute: (settings) {
           // passing arguments to routes

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:horario/providers/class.dart';
-import 'package:horario/providers/classes.dart';
-import 'package:horario/widgets/class_card.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/class.dart';
+import '../providers/classes.dart';
+import '../widgets/class_card.dart';
+import '../widgets/new_class.dart';
 
 class ScheduleScreen extends StatefulWidget {
   @override
@@ -38,47 +40,29 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       );
 
   void showNewClassForm(BuildContext context) {
-    // Arguments => context: The context for the modal sheet to be created in
-    //
-    // Opens up the NewTask modal sheet to add a new task
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      isDismissible: true,
-      builder: (_) {
-        return GestureDetector(
-          onTap: () {},
-          behavior: HitTestBehavior.opaque,
-          child: Container(),
-        );
-      },
-    );
+    Navigator.of(context).pushNamed(NewClass.routeName);
   }
 
-  Widget _offsetPopup() => PopupMenuButton<int>(
+  void showNewAssignmentForm(BuildContext context) {}
+
+  Widget _showFABPopupMenu() => PopupMenuButton<int>(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         itemBuilder: (context) => [
-          PopupMenuItem(
-            value: 1,
-            child: InkWell(
-              onTap: () => showNewClassForm(context),
-              child: const Text(
-                "Add Class",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+          const PopupMenuItem(
+            value: 0,
+            child: Text(
+              "Add Class",
+              style: TextStyle(
+                color: Colors.white,
               ),
             ),
           ),
-          PopupMenuItem(
-            value: 2,
-            child: InkWell(
-              onTap: () {},
-              child: const Text(
-                "Add Assignment",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+          const PopupMenuItem(
+            value: 1,
+            child: Text(
+              "Add Assignment",
+              style: TextStyle(
+                color: Colors.white,
               ),
             ),
           ),
@@ -96,6 +80,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           ),
         ),
         offset: const Offset(0, -140),
+        onSelected: (index) {
+          if (index == 0) {
+            showNewClassForm(context);
+          } else {
+            showNewAssignmentForm(context);
+          }
+        },
       );
 
   @override
@@ -105,7 +96,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       floatingActionButton: SizedBox(
         height: 75.0,
         width: 75.0,
-        child: _offsetPopup(),
+        child: _showFABPopupMenu(),
       ),
       body: Column(
         children: [
