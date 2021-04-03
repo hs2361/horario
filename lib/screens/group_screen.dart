@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:horario/providers/group_chat_class.dart';
-import 'package:horario/providers/group_chat_provider.dart';
+import 'package:horario/providers/note.dart';
+import 'package:horario/providers/notes.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -86,10 +86,9 @@ class _GroupScreenState extends State<GroupScreen> {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: Provider.of<ChatCollection>(context).chat.length,
+              itemCount: Provider.of<Notes>(context).groupchat.length,
               itemBuilder: (context, index) {
-                final List<GroupChatClass> chat =
-                    Provider.of<ChatCollection>(context).chat;
+                final List<Note> chat = Provider.of<Notes>(context).groupchat;
                 return GroupChatCard(chat[index]);
               },
             ),
@@ -102,7 +101,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
 class GroupChatCard extends StatelessWidget {
   // ignore: non_constant_identifier_names
-  final GroupChatClass curr_chat_msg;
+  final Note curr_chat_msg;
   const GroupChatCard(this.curr_chat_msg);
 
   @override
