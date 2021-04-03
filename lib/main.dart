@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
           create: (_) => Class(),
         ),
         ChangeNotifierProvider(
-          create: (_) => Classes(),
+          create: (ctx) => Classes(ctx),
         ),
         ChangeNotifierProvider(
           create: (_) => Note(),
