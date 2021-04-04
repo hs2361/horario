@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class Note with ChangeNotifier {
   String? user;
+  //TODO make a boolean
   int? messageType;
   DateTime? sentTime;
   String? notesName;
@@ -10,7 +11,7 @@ class Note with ChangeNotifier {
   String? filename;
 
   Note({
-    this.user = "",
+    this.user,
     this.messageType,
     this.sentTime,
     this.subject,

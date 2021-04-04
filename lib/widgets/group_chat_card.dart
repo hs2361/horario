@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:horario/providers/note.dart';
+import 'package:intl/intl.dart';
 
 class GroupChatCard extends StatelessWidget {
   // ignore: non_constant_identifier_names
@@ -8,53 +9,63 @@ class GroupChatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String timeString;
-    // TODO: timeString = DateFormat('HH:MM').format(curr_chat_msg.sentTime ?? DateTime.now());
-    timeString = "11:04";
-    Card currCard = Card();
+    final String timeString =
+        DateFormat('HH:MM').format(curr_chat_msg.sentTime ?? DateTime.now());
 
     //TODO: Get userID from firebase here
     String? currUser = "2zZWzj2gOuOz2XrJIifcoTMqt3C3";
 
-    return Container(
-      width: 300,
-      padding: EdgeInsets.only(left: 14, right: 14, top: 5, bottom: 5),
-      child: Align(
-        alignment: (curr_chat_msg.user != currUser
-            ? Alignment.topLeft
-            : Alignment.topRight),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: (curr_chat_msg.user == currUser
-                ? Colors.blue[200]
-                : Colors.grey.shade200),
+    return Row(
+      children: [
+        if (curr_chat_msg.user == currUser)
+          const SizedBox(
+            width: 60,
           ),
-          padding: EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                //TYPE 0 is request type 1 is Upload
-                (curr_chat_msg.messageType == 0)
-                    ? "Request made for " + (curr_chat_msg.notesName ?? "")
-                    : "Notes for " +
-                        (curr_chat_msg.notesName ?? "") +
-                        " Uploaded",
-                style: TextStyle(fontSize: 15, color: Colors.black),
+        Container(
+          constraints: const BoxConstraints(maxWidth: 300),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: curr_chat_msg.user != currUser
+                  ? Alignment.topLeft
+                  : Alignment.topRight,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: curr_chat_msg.user == currUser
+                      ? Colors.blue[200]
+                      : Colors.grey.shade200,
+                ),
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      //TYPE 0 is request type 1 is Upload
+                      (curr_chat_msg.messageType == 0)
+                          ? "Request made for ${curr_chat_msg.notesName ?? ""}"
+                          : "Notes for ${curr_chat_msg.notesName ?? ""} Uploaded",
+                      style: const TextStyle(fontSize: 15, color: Colors.black),
+                    ),
+                    Text(
+                      curr_chat_msg.messageBody ?? "",
+                      style: const TextStyle(fontSize: 15, color: Colors.black),
+                    ),
+                    Text(
+                      timeString,
+                      style: const TextStyle(fontSize: 15, color: Colors.black),
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                curr_chat_msg.messageBody ?? "",
-                style: TextStyle(fontSize: 15, color: Colors.black),
-              ),
-              Text(
-                timeString,
-                style: TextStyle(fontSize: 15, color: Colors.black),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        if (curr_chat_msg.user != currUser)
+          const SizedBox(
+            width: 60,
+          ),
+      ],
     );
   }
 }
