@@ -15,7 +15,7 @@ class ClassCard extends StatelessWidget {
           "${(c.schedule ?? [])[0].start.format(context)} - ${(c.schedule ?? [])[0].end.format(context)}";
     } else {
       timeString =
-          "Due ${DateFormat('HH:MM').format(c.deadline ?? DateTime.now())}";
+          "Due ${DateFormat('HH:mm').format(c.deadline ?? DateTime.now())}";
     }
     return Container(
       padding: const EdgeInsets.all(8),

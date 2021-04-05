@@ -10,7 +10,7 @@ class GroupChatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String timeString =
-        DateFormat('HH:MM').format(curr_chat_msg.sentTime ?? DateTime.now());
+        DateFormat('HH:mm').format(curr_chat_msg.sentTime ?? DateTime.now());
 
     //TODO: Get userID from firebase here
     String? currUser = "2zZWzj2gOuOz2XrJIifcoTMqt3C3";

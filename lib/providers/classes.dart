@@ -93,7 +93,9 @@ class Classes with ChangeNotifier {
         'subject': subject,
         'link': link,
         'deadline': deadline,
-        'schedule': schedule!.map((t) => t.asMap).toList(),
+        'schedule':
+            // ignore: prefer_null_aware_operators
+            schedule != null ? schedule.map((t) => t.asMap).toList() : null,
         'color': color.value
       });
       _classes.last.id = classDoc.id;
@@ -117,12 +119,18 @@ class Classes with ChangeNotifier {
           schedule[t.weekday - 1].add(scheduledClass);
         }
       } else {
-        final Class scheduleAssignment = Class(
+        if (class_.deadline!
+                .isBefore(DateTime.now().add(const Duration(days: 6))) &&
+            class_.deadline!.isAfter(DateTime.now())) {
+          final Class scheduleAssignment = Class(
             subject: class_.subject,
             link: class_.link,
             deadline: class_.deadline,
-            color: class_.color);
-        schedule[((class_.deadline?.weekday ?? 1) - 1)].add(scheduleAssignment);
+            color: class_.color,
+          );
+          schedule[((class_.deadline?.weekday ?? 1) - 1)]
+              .add(scheduleAssignment);
+        }
       }
     }
     for (final row in schedule) {
@@ -168,18 +176,21 @@ class Classes with ChangeNotifier {
       final firestoreClasses = (await classes.get()).docs;
       for (final QueryDocumentSnapshot doc in firestoreClasses) {
         final classData = doc.data();
-        final schedule = classData?['schedule'] as List<dynamic>;
+        final schedule = classData?['schedule'] as List<dynamic>?;
         _classes.add(
           Class(
             subject: classData?['subject'] as String,
             link: classData?['link'] as String?,
             color: Color(classData?['color'] as int),
             deadline: classData?['deadline'] != null
-                ? DateTime.parse(classData?['deadline'] as String)
+                ? (classData?['deadline'] as Timestamp).toDate()
                 : null,
-            schedule: schedule
-                .map((t) => TimeSlot.fromMap(t as Map<String, dynamic>))
-                .toList(),
+            // ignore: prefer_null_aware_operators
+            schedule: schedule != null
+                ? schedule
+                    .map((t) => TimeSlot.fromMap(t as Map<String, dynamic>))
+                    .toList()
+                : null,
           ),
         );
       }

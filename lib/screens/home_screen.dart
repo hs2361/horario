@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:horario/widgets/new_assignment.dart';
 import 'package:horario/widgets/new_notes_request.dart';
 import 'package:provider/provider.dart';
 
@@ -55,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         routes: {
           ProfileScreen.routeName: (_) => ProfileScreen(auth),
           NewClass.routeName: (_) => NewClass(),
+          NewAssignment.routeName: (_) => NewAssignment(),
           NewNotesRequest.routeName: (_) => NewNotesRequest(),
         },
         onGenerateRoute: (settings) {
