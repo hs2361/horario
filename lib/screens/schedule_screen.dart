@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/class.dart';
 import '../providers/classes.dart';
 import '../widgets/class_card.dart';
+import '../widgets/new_assignment.dart';
 import '../widgets/new_class.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -44,7 +45,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     Navigator.of(context).pushNamed(NewClass.routeName);
   }
 
-  void showNewAssignmentForm(BuildContext context) {}
+  void showNewAssignmentForm(BuildContext context) {
+    Navigator.of(context).pushNamed(NewAssignment.routeName);
+  }
 
   Widget _showFABPopupMenu() => PopupMenuButton<int>(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

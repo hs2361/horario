@@ -12,7 +12,7 @@ class GroupChatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String timeString =
-        DateFormat('HH:MM').format(curr_chat_msg.sentTime ?? DateTime.now());
+        DateFormat('HH:mm').format(curr_chat_msg.sentTime ?? DateTime.now());
 
 
     final String currUser =
