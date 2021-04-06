@@ -9,6 +9,7 @@ class Note with ChangeNotifier {
   String? messageBody;
   String? subject;
   String? filename;
+  String? fileUrl;
 
   Note({
     this.user,
@@ -18,5 +19,6 @@ class Note with ChangeNotifier {
     this.filename,
     this.notesName,
     this.messageBody,
+    this.fileUrl,
   });
 }

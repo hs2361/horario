@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:horario/providers/auth_service.dart';
 import 'package:horario/providers/note.dart';
 import 'package:horario/providers/notes.dart';
+import 'package:horario/widgets/new_notes.dart';
 import 'package:provider/provider.dart';
 import 'package:horario/widgets/group_chat_card.dart';
 import 'package:horario/widgets/new_notes_request.dart';
@@ -17,7 +17,9 @@ class _GroupScreenState extends State<GroupScreen> {
     Navigator.of(context).pushNamed(NewNotesRequest.routeName);
   }
 
-  void showUploadNotesForm(BuildContext context) {}
+  void showUploadNotesForm(BuildContext context) {
+    Navigator.of(context).pushNamed(NewNotes.routeName);
+  }
 
   bool _isLoading = true;
   bool _noUserGroup = true;
@@ -27,10 +29,10 @@ class _GroupScreenState extends State<GroupScreen> {
     super.initState();
     Future.delayed(Duration.zero, () async {
       await Provider.of<AuthService>(context, listen: false).checkGroupID();
-      final String groupId =
-          Provider.of<AuthService>(context, listen: false).getGroupId!;
+      final String? groupId =
+          Provider.of<AuthService>(context, listen: false).getGroupId;
 
-      if (groupId.isNotEmpty) {
+      if (groupId != null && groupId.isNotEmpty) {
         _noUserGroup = false;
         await Provider.of<Notes>(context, listen: false)
             .fetchNotesFromFirestore(groupId);
@@ -96,7 +98,7 @@ class _GroupScreenState extends State<GroupScreen> {
       if (_noUserGroup) {
         return const Center(
           child: Text(
-              "You can't use this functionality since your account isn't associated with any registered organization"),
+              "You need to be part of a group to use this feature."),
         );
       } else {
         return Scaffold(

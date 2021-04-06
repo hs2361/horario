@@ -68,6 +68,7 @@ class Notes with ChangeNotifier {
     String? messageBody,
     String? subject,
     String? filename,
+    String? fileURL,
   }) async {
     _notes.add(
       Note(
@@ -77,7 +78,8 @@ class Notes with ChangeNotifier {
         messageType: messageType,
         messageBody: messageBody,
         subject: subject,
-        filename: filename
+        filename: filename,
+        fileUrl: fileURL,
       ),
     );
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -94,6 +96,8 @@ class Notes with ChangeNotifier {
         'notes_name':notesName,
         'sent_at': DateTime.now(),
         'subject': subject,
+        'filename': filename,
+        'fileurl': fileURL,
       });
       notifyListeners();
     } on Exception {
