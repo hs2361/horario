@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 
 // ignore: constant_identifier_names
 enum AuthState { SignedIn, NotVerified, SignedUp, SignedOut }
@@ -12,11 +14,12 @@ class AuthService with ChangeNotifier {
 
   /// Changed to idTokenChanges as it updates depending on more cases.
   Stream<User?> get authStateChanges => _firebaseAuth.idTokenChanges();
-
+  String? groupId;
   String? get displayName => FirebaseAuth.instance.currentUser?.displayName;
   String? get photoUrl => FirebaseAuth.instance.currentUser?.photoURL;
   String? get email => FirebaseAuth.instance.currentUser?.email;
   String? get userId => FirebaseAuth.instance.currentUser?.uid;
+  String? get getGroupId => groupId;
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
@@ -75,6 +78,21 @@ class AuthService with ChangeNotifier {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException {
       rethrow;
+    }
+  }
+
+  Future<void> checkGroupID() async {
+    //Check if user is a part of any group and if he isnt then store group_id as empty string
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final CollectionReference groups = firestore.collection('groups');
+    final String? currUserEmail = FirebaseAuth.instance.currentUser?.email;
+
+    final firestoreGroups =
+        (await groups.where('members', arrayContains: currUserEmail).get())
+            .docs;
+
+    for (final QueryDocumentSnapshot doc in firestoreGroups) {
+      groupId = doc.id;
     }
   }
 }

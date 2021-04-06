@@ -107,9 +107,9 @@ class Notes with ChangeNotifier {
     return currchat;
   }
     
-  Future<void> fetchNotesFromFirestore() async {
+  Future<void> fetchNotesFromFirestore(String groupId) async {
     //TODO: make logic for finding group ID from user profile
-    const String groupId = "PgbZfCnPgRQPRxSEwG5a";
+    
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final CollectionReference notes =
         firestore.collection('groups').doc(groupId).collection('chat');
@@ -117,8 +117,8 @@ class Notes with ChangeNotifier {
     _notes.clear();
 
     try {
-      final firestoreClasses = (await notes.get()).docs;
-      for (final QueryDocumentSnapshot doc in firestoreClasses) {
+      final firestoreNotes = (await notes.get()).docs;
+      for (final QueryDocumentSnapshot doc in firestoreNotes) {
         final notesData = doc.data();
         _notes.add(
           Note(
