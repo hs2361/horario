@@ -1,23 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:horario/providers/classes.dart';
 import 'package:provider/provider.dart';
 import 'package:time_range_picker/time_range_picker.dart';
+
 import '../providers/class.dart';
+import '../providers/classes.dart';
 
 class NewClass extends StatefulWidget {
   static const routeName = '/new-class';
+  final Map<String, dynamic>? data;
+  const NewClass(this.data);
   @override
   _NewClassState createState() => _NewClassState();
 }
 
 class _NewClassState extends State<NewClass> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _subjectController = TextEditingController();
-  final TextEditingController _linkController = TextEditingController();
-  final List<TimeSlot> _schedule = [];
+  TextEditingController _subjectController = TextEditingController();
+  TextEditingController _linkController = TextEditingController();
+  List<TimeSlot> _schedule = [];
   Color _color = Colors.blueAccent;
   String? dropdownValue;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.data != null) {
+      final Map<String, dynamic> data = widget.data ?? {};
+      _subjectController =
+          TextEditingController(text: data['subject'] as String);
+      _linkController =
+          TextEditingController(text: (data['link'] ?? "") as String);
+      _color = data['color'] as Color;
+      _schedule = data['schedule'] as List<TimeSlot>;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subjectController.dispose();
+    _linkController.dispose();
+  }
 
   void showColorPicker() {
     final List<Color> _colors = [
@@ -328,19 +352,33 @@ class _NewClassState extends State<NewClass> {
                         "Schedule cannot be empty",
                       );
                     } else {
-                      Provider.of<Classes>(context, listen: false).addClass(
-                        subject: _subjectController.text,
-                        schedule: _schedule,
-                        color: _color,
-                        link: _linkController.text.isEmpty
-                            ? null
-                            : _linkController.text,
-                      );
+                      if (widget.data == null) {
+                        Provider.of<Classes>(context, listen: false).addClass(
+                          subject: _subjectController.text,
+                          schedule: _schedule,
+                          color: _color,
+                          link: _linkController.text.isEmpty
+                              ? null
+                              : _linkController.text,
+                        );
+                      } else {
+                        Provider.of<Classes>(context, listen: false)
+                            .updateClass(
+                          id: widget.data?['id'] as String,
+                          subject: _subjectController.text,
+                          schedule: _schedule,
+                          color: _color,
+                          link: _linkController.text.isEmpty
+                              ? null
+                              : _linkController.text,
+                        );
+                      }
                       Navigator.of(context).pop();
                     }
                   }
                 },
-                label: const Text("Create Class"),
+                label:
+                    Text(widget.data == null ? "Create Class" : "Update Class"),
                 icon: const Icon(Icons.check),
                 foregroundColor: Colors.white,
                 backgroundColor: _color,

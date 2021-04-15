@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:horario/providers/auth_service.dart';
-import 'package:horario/providers/note.dart';
-import 'package:horario/providers/notes.dart';
-import 'package:horario/widgets/new_notes.dart';
 import 'package:provider/provider.dart';
-import 'package:horario/widgets/group_chat_card.dart';
-import 'package:horario/widgets/new_notes_request.dart';
+
+import '../providers/auth_service.dart';
+import '../providers/note.dart';
+import '../providers/notes.dart';
+import '../widgets/group_chat_card.dart';
+import '../widgets/new_notes.dart';
+import '../widgets/new_notes_request.dart';
 
 class GroupScreen extends StatefulWidget {
   @override

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Class with ChangeNotifier {
   String id;
-  final String subject;
+  String subject;
   String? link;
   DateTime? deadline;
   List<TimeSlot>? schedule;
