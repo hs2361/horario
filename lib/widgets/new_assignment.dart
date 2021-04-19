@@ -1,20 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:horario/providers/classes.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/classes.dart';
 
 class NewAssignment extends StatefulWidget {
   static const routeName = '/new-assignment';
+  final Map<String, dynamic>? data;
+  const NewAssignment(this.data);
   @override
   _NewAssignmentState createState() => _NewAssignmentState();
 }
 
 class _NewAssignmentState extends State<NewAssignment> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _subjectController = TextEditingController();
+  TextEditingController _subjectController = TextEditingController();
   DateTime? _deadline = DateTime.now();
   Color _color = Colors.blueAccent;
   String? dropdownValue;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.data != null) {
+      final Map<String, dynamic> data = widget.data ?? {};
+      _subjectController =
+          TextEditingController(text: data['subject'] as String);
+      _color = data['color'] as Color;
+      _deadline = data['deadline'] as DateTime;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subjectController.dispose();
+  }
 
   void showColorPicker() {
     final List<Color> _colors = [
@@ -46,13 +67,16 @@ class _NewAssignmentState extends State<NewAssignment> {
   Future<void> pickDeadline() async {
     final DateTime? date = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate:
+          widget.data != null ? _deadline ?? DateTime.now() : DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2121),
     );
     final TimeOfDay? time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: widget.data != null
+          ? TimeOfDay(hour: _deadline!.hour, minute: _deadline!.minute)
+          : TimeOfDay.now(),
     );
     setState(() {
       if (time != null && date != null) {
@@ -175,16 +199,30 @@ class _NewAssignmentState extends State<NewAssignment> {
                         "Deadline cannot be empty",
                       );
                     } else {
-                      Provider.of<Classes>(context, listen: false).addClass(
-                        subject: _subjectController.text,
-                        deadline: _deadline,
-                        color: _color,
-                      );
+                      if (widget.data == null) {
+                        Provider.of<Classes>(context, listen: false).addClass(
+                          subject: _subjectController.text,
+                          deadline: _deadline,
+                          color: _color,
+                        );
+                      } else {
+                        Provider.of<Classes>(context, listen: false)
+                            .updateClass(
+                          id: widget.data?['id'] as String,
+                          subject: _subjectController.text,
+                          deadline: _deadline,
+                          color: _color,
+                        );
+                      }
                       Navigator.of(context).pop();
                     }
                   }
                 },
-                label: const Text("Create Assignment"),
+                label: Text(
+                  widget.data == null
+                      ? "Create Assignment"
+                      : "Update Assignment",
+                ),
                 icon: const Icon(Icons.check),
                 foregroundColor: Colors.white,
                 backgroundColor: _color,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:horario/providers/notes.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/notes.dart';
 
 class NewNotesRequest extends StatefulWidget {
   static const routeName = '/new-notes-request';

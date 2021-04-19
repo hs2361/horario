@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:horario/providers/auth_service.dart';
-import 'package:horario/providers/note.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/auth_service.dart';
+import '../providers/note.dart';
 
 class GroupChatCard extends StatelessWidget {
   // ignore: non_constant_identifier_names

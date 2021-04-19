@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:horario/widgets/new_assignment.dart';
-import 'package:horario/widgets/new_notes.dart';
-import 'package:horario/widgets/new_notes_request.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_service.dart';
+import '../widgets/new_assignment.dart';
 import '../widgets/new_class.dart';
+import '../widgets/new_notes.dart';
+import '../widgets/new_notes_request.dart';
 import './profile_screen.dart';
 import './tabs_screen.dart';
 
@@ -56,8 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         routes: {
           ProfileScreen.routeName: (_) => ProfileScreen(auth),
-          NewClass.routeName: (_) => NewClass(),
-          NewAssignment.routeName: (_) => NewAssignment(),
           NewNotesRequest.routeName: (_) => NewNotesRequest(),
           NewNotes.routeName: (_) => NewNotes(),
         },
@@ -65,9 +63,21 @@ class _HomeScreenState extends State<HomeScreen> {
           // passing arguments to routes
           if (settings.name == TabsScreen.routeName) {
             final int selected = (settings.arguments ?? 0) as int;
-            return MaterialPageRoute(builder: (context) {
-              return TabsScreen(selected);
-            });
+            return MaterialPageRoute(
+              builder: (context) => TabsScreen(selected),
+            );
+          } else if (settings.name == NewClass.routeName) {
+            final Map<String, dynamic>? data =
+                settings.arguments as Map<String, dynamic>?;
+            return MaterialPageRoute(
+              builder: (context) => NewClass(data),
+            );
+          } else if (settings.name == NewAssignment.routeName) {
+            final Map<String, dynamic>? data =
+                settings.arguments as Map<String, dynamic>?;
+            return MaterialPageRoute(
+              builder: (context) => NewAssignment(data),
+            );
           }
         },
       ),

@@ -1,14 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:horario/providers/class.dart';
-import 'package:horario/providers/classes.dart';
-import 'package:horario/providers/note.dart';
-import 'package:horario/providers/notes.dart';
 import 'package:provider/provider.dart';
-import 'providers/auth_service.dart';
-import 'screens/auth_screen.dart';
-import 'screens/home_screen.dart';
+
+import './providers/auth_service.dart';
+import './providers/class.dart';
+import './providers/classes.dart';
+import './providers/note.dart';
+import './providers/notes.dart';
+import './screens/auth_screen.dart';
+import './screens/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

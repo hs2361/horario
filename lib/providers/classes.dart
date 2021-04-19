@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:horario/providers/auth_service.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/auth_service.dart';
 import './class.dart';
 
 class Classes with ChangeNotifier {
@@ -105,12 +105,64 @@ class Classes with ChangeNotifier {
     }
   }
 
+  Future<void> updateClass({
+    required String id,
+    String? subject,
+    String? link,
+    DateTime? deadline,
+    List<TimeSlot>? schedule,
+    Color? color,
+  }) async {
+    final int index = _classes.indexWhere((c) => c.id == id);
+    _classes[index].subject = subject ?? _classes[index].subject;
+    _classes[index].link = link ?? _classes[index].link;
+    _classes[index].deadline = deadline ?? _classes[index].deadline;
+    _classes[index].schedule = schedule ?? _classes[index].schedule;
+    _classes[index].color = color ?? _classes[index].color;
+
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final String userId =
+        Provider.of<AuthService>(context, listen: false).userId!;
+    final DocumentReference c =
+        firestore.collection('users').doc(userId).collection('classes').doc(id);
+
+    await c.update({
+      'subject': subject ?? _classes[index].subject,
+      'link': link ?? _classes[index].link,
+      'deadline': deadline ?? _classes[index].deadline,
+      'schedule':
+          // ignore: prefer_null_aware_operators
+          schedule != null
+              ? schedule.map((t) => t.asMap).toList()
+              // ignore: prefer_null_aware_operators
+              : (_classes[index].schedule != null
+                  ? _classes[index].schedule?.map((t) => t.asMap).toList()
+                  : null),
+      'color': (color ?? _classes[index].color).value
+    });
+    notifyListeners();
+  }
+
+  Future<void> deleteClass(String id) async {
+    _classes.removeWhere((c) => c.id == id);
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final String userId =
+        Provider.of<AuthService>(context, listen: false).userId!;
+    final DocumentReference c =
+        firestore.collection('users').doc(userId).collection('classes').doc(id);
+    await c.delete();
+    notifyListeners();
+  }
+
+  Class getClassbyId(String id) => _classes.firstWhere((c) => c.id == id);
+
   List<List<Class>> get schedule {
     final List<List<Class>> schedule = [[], [], [], [], [], [], []];
     for (final class_ in _classes) {
       if (class_.schedule != null) {
         for (final TimeSlot t in class_.schedule!) {
           final Class scheduledClass = Class(
+            id: class_.id,
             subject: class_.subject,
             link: class_.link,
             schedule: [t],
@@ -123,6 +175,7 @@ class Classes with ChangeNotifier {
                 .isBefore(DateTime.now().add(const Duration(days: 6))) &&
             class_.deadline!.isAfter(DateTime.now())) {
           final Class scheduleAssignment = Class(
+            id: class_.id,
             subject: class_.subject,
             link: class_.link,
             deadline: class_.deadline,
@@ -179,6 +232,7 @@ class Classes with ChangeNotifier {
         final schedule = classData?['schedule'] as List<dynamic>?;
         _classes.add(
           Class(
+            id: doc.id,
             subject: classData?['subject'] as String,
             link: classData?['link'] as String?,
             color: Color(classData?['color'] as int),

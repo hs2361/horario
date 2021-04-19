@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:horario/screens/profile_screen.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth_service.dart';
+import '../screens/profile_screen.dart';
 
 class MainDrawer extends StatefulWidget {
   // Drawer widget for the TabsScreen
