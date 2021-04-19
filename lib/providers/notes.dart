@@ -10,6 +10,7 @@ class Notes with ChangeNotifier {
 
   Notes(this.context);
 
+  final List<String> _subjects = [];
   //dummy data for testing purposes
   final List<Note> _notes = [
     // Note(
@@ -92,8 +93,8 @@ class Notes with ChangeNotifier {
       await notes.add({
         'message_body': messageBody,
         'message_type': messageType,
-        'user':user,
-        'notes_name':notesName,
+        'user': user,
+        'notes_name': notesName,
         'sent_at': DateTime.now(),
         'subject': subject,
         'filename': filename,
@@ -106,34 +107,59 @@ class Notes with ChangeNotifier {
   }
 
   List<Note> get groupchat {
-    final List<Note> currchat = _notes;
-
-    return currchat;
+    return _notes;
   }
-    
+
+  List<String> get subjectList {
+    return _subjects;
+  }
+
+  String? currSubject;
+  // ignore: avoid_setters_without_getters
+  set currsub(String subject) {
+    currSubject = subject;
+  }
+
+  List<Note> get subjectwiseNotes {
+    final List<Note> subjectNotes = [];
+
+    for (final Note currnote in _notes) {
+      if (currnote.subject == currSubject) {
+        subjectNotes.add(currnote);
+      }
+    }
+
+    return subjectNotes;
+  }
+
   Future<void> fetchNotesFromFirestore(String groupId) async {
     //TODO: make logic for finding group ID from user profile
-    
+
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final CollectionReference notes =
         firestore.collection('groups').doc(groupId).collection('chat');
 
     _notes.clear();
+    _subjects.clear();
 
     try {
       final firestoreNotes = (await notes.get()).docs;
       for (final QueryDocumentSnapshot doc in firestoreNotes) {
         final notesData = doc.data();
+        final String currSubject = notesData?['subject'] as String;
         _notes.add(
           Note(
-            subject: notesData?['subject'] as String,
-            messageType: notesData?['message_type'] as int,
-            messageBody: notesData?['message_body'] as String,
-            notesName: notesData?['notes_name'] as String,
-            sentTime: notesData?['sent_at'].toDate() as DateTime,
-            user: notesData?['user'] as String
-          ),
+              subject: currSubject,
+              messageType: notesData?['message_type'] as int,
+              messageBody: notesData?['message_body'] as String,
+              notesName: notesData?['notes_name'] as String,
+              sentTime: notesData?['sent_at'].toDate() as DateTime,
+              user: notesData?['user'] as String),
         );
+
+        if (!_subjects.contains(currSubject)) {
+          _subjects.add(currSubject);
+        }
       }
       notifyListeners();
     } on Exception {
