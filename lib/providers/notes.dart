@@ -154,7 +154,9 @@ class Notes with ChangeNotifier {
               messageBody: notesData?['message_body'] as String,
               notesName: notesData?['notes_name'] as String,
               sentTime: notesData?['sent_at'].toDate() as DateTime,
-              user: notesData?['user'] as String),
+              user: notesData?['user'] as String,
+              filename: notesData?['filename'] as String,
+              fileUrl: notesData?['fileurl'] as String),
         );
 
         if (!_subjects.contains(currSubject)) {

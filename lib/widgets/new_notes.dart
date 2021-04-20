@@ -127,13 +127,14 @@ class _NewNotesState extends State<NewNotes> {
                           setState(() {
                             _isLoading = true;
                           });
-                          
-                          await firebase_storage.FirebaseStorage.instance
+
+                          final instance =
+                              firebase_storage.FirebaseStorage.instance;
+                          await instance
                               .ref("uploads/${file.path.split('/').last}")
                               .putFile(file);
-                          final String downloadUrl = await firebase_storage
-                              .FirebaseStorage.instance
-                              .ref('uploads/${file.path}')
+                          final String downloadUrl = await instance
+                              .ref('uploads/${file.path.split('/').last}')
                               .getDownloadURL();
                           setState(() {
                             _fileName = file.path.split('/').last;
