@@ -123,26 +123,36 @@ class _NewNotesState extends State<NewNotes> {
                       if (result != null) {
                         final File file = File(result.files.single.path!);
 
-                        try {
-                          setState(() {
-                            _isLoading = true;
-                          });
+                        final int fileSize = await file.length();//REturns file sie in bytes
 
-                          final instance =
-                              firebase_storage.FirebaseStorage.instance;
-                          await instance
-                              .ref("uploads/${file.path.split('/').last}")
-                              .putFile(file);
-                          final String downloadUrl = await instance
-                              .ref('uploads/${file.path.split('/').last}')
-                              .getDownloadURL();
-                          setState(() {
-                            _fileName = file.path.split('/').last;
-                            _fileURL = downloadUrl;
-                            _isLoading = false;
-                          });
-                        } on firebase_core.FirebaseException {
-                          rethrow;
+                        if (fileSize < 26214400) {
+                          try {
+                            setState(() {
+                              _isLoading = true;
+                            });
+
+                            final instance =
+                                firebase_storage.FirebaseStorage.instance;
+                            await instance
+                                .ref("uploads/${file.path.split('/').last}")
+                                .putFile(file);
+                            final String downloadUrl = await instance
+                                .ref('uploads/${file.path.split('/').last}')
+                                .getDownloadURL();
+                            setState(() {
+                              _fileName = file.path.split('/').last;
+                              _fileURL = downloadUrl;
+                              _isLoading = false;
+                            });
+                          } on firebase_core.FirebaseException {
+                            rethrow;
+                          }
+                        } else {
+                          _showErrorDialog(
+                            context,
+                            "Error",
+                            "File size must be less than 25 MB.",
+                          );
                         }
                       } else {
                         _showErrorDialog(
