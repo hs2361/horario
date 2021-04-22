@@ -88,7 +88,6 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 }
 
-
 class DataSearch extends SearchDelegate<String> {
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -102,26 +101,47 @@ class DataSearch extends SearchDelegate<String> {
     return IconButton(
         icon: AnimatedIcon(
             icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
-        onPressed: () {});
+        onPressed: () {
+          Navigator.pop(context);
+        });
   }
 
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
+    final List<Note> allNotes = Provider.of<Notes>(context)
+        .allNotes
+        .where((n) => n.notesName!.startsWith(query))
+        .toList();
+
+    // TODO: implement buildSuggestions
     return ListView.builder(
-      itemBuilder: (context, index) => ListTile(title: Text("something here")),
-      itemCount: 3,
+      itemBuilder: (context, index) => ListTile(
+        title: Text(allNotes[index].notesName!),
+        subtitle: Text(
+          "Subject: ${allNotes[index].subject!}",
+        ),
+      ),
+      itemCount: allNotes.length,
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<Note> allNotes = Provider.of<Notes>(context).groupchat;
+    final List<Note> allNotes = Provider.of<Notes>(context)
+        .allNotes
+        .where((n) => n.notesName!.startsWith(query))
+        .toList();
+
     // TODO: implement buildSuggestions
     return ListView.builder(
-      itemBuilder: (context, index) => ListTile(title: Text("something here")),
-      itemCount: 3,
+      itemBuilder: (context, index) => ListTile(
+        title: Text(allNotes[index].notesName!),
+        subtitle: Text(
+          "Subject: ${allNotes[index].subject!}",
+        ),
+      ),
+      itemCount: allNotes.length,
     );
   }
 }
-

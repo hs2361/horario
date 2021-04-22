@@ -124,12 +124,24 @@ class Notes with ChangeNotifier {
     final List<Note> subjectNotes = [];
 
     for (final Note currnote in _notes) {
-      if (currnote.subject == currSubject) {
+      if (currnote.subject == currSubject && currnote.messageType == 1) {
         subjectNotes.add(currnote);
       }
     }
 
     return subjectNotes;
+  }
+
+  List<Note> get allNotes {
+    final List<Note> allNotes = [];
+
+    for (final Note currnote in _notes) {
+      if (currnote.messageType == 1) {
+        allNotes.add(currnote);
+      }
+    }
+
+    return allNotes;
   }
 
   Future<void> fetchNotesFromFirestore(String groupId) async {
