@@ -57,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
         routes: {
           ProfileScreen.routeName: (_) => ProfileScreen(auth),
           NewNotesRequest.routeName: (_) => NewNotesRequest(),
-          NewNotes.routeName: (_) => NewNotes(),
         },
         onGenerateRoute: (settings) {
           // passing arguments to routes
@@ -77,6 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 settings.arguments as Map<String, dynamic>?;
             return MaterialPageRoute(
               builder: (context) => NewAssignment(data),
+            );
+          } else if (settings.name == NewNotes.routeName) {
+            final Map<String, dynamic>? data =
+                settings.arguments as Map<String, dynamic>?;
+            return MaterialPageRoute(
+              builder: (context) => NewNotes(data),
             );
           }
         },

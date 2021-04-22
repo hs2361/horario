@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Note with ChangeNotifier {
+  String id;
   String? user;
   //TODO make a boolean
   int? messageType;
@@ -12,6 +13,7 @@ class Note with ChangeNotifier {
   String? fileUrl;
 
   Note({
+    this.id = "",
     this.user,
     this.messageType,
     this.sentTime,
