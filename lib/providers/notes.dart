@@ -75,6 +75,7 @@ class Notes with ChangeNotifier {
   }) async {
     _notes.add(
       Note(
+        id: DateTime.now().toString(),
         user: user,
         notesName: notesName,
         sentTime: currTime,
@@ -92,7 +93,7 @@ class Notes with ChangeNotifier {
         firestore.collection('groups').doc(groupId).collection('chat');
 
     try {
-      await notes.add({
+      final DocumentReference notesDoc = await notes.add({
         'message_body': messageBody,
         'message_type': messageType,
         'user': user,
@@ -102,6 +103,7 @@ class Notes with ChangeNotifier {
         'filename': filename,
         'fileurl': fileURL,
       });
+      _notes.last.id = notesDoc.id;
       notifyListeners();
     } on Exception {
       rethrow;
@@ -209,6 +211,7 @@ class Notes with ChangeNotifier {
         final String currSubject = notesData?['subject'] as String;
         _notes.add(
           Note(
+              id: doc.id,
               subject: currSubject,
               messageType: notesData?['message_type'] as int,
               messageBody: notesData?['message_body'] as String,

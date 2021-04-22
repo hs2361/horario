@@ -26,7 +26,6 @@ class _NewNotesState extends State<NewNotes> {
   TextEditingController _subjectController = TextEditingController();
   TextEditingController _notesNameController = TextEditingController();
   TextEditingController _notesDetailsController = TextEditingController();
-  Color _color = Colors.blueAccent;
 
   @override
   void initState() {
@@ -39,7 +38,8 @@ class _NewNotesState extends State<NewNotes> {
           TextEditingController(text: data['notesName'] as String);
       _notesDetailsController =
           TextEditingController(text: data['notesDetails'] as String);
-      _color = data['color'] as Color;
+      _fileName = data['filename'] as String;
+      _fileURL = data['fileUrl'] as String;
     }
   }
 
@@ -94,7 +94,8 @@ class _NewNotesState extends State<NewNotes> {
           child: Column(
             children: [
               Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
+                data:
+                    Theme.of(context).copyWith(primaryColor: Colors.blueAccent),
                 child: TextFormField(
                   autofocus: true,
                   style: const TextStyle(fontSize: 25),
@@ -110,7 +111,8 @@ class _NewNotesState extends State<NewNotes> {
                 ),
               ),
               Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
+                data:
+                    Theme.of(context).copyWith(primaryColor: Colors.blueAccent),
                 child: TextFormField(
                   autofocus: true,
                   style: const TextStyle(fontSize: 25),
@@ -126,7 +128,8 @@ class _NewNotesState extends State<NewNotes> {
                 ),
               ),
               Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
+                data:
+                    Theme.of(context).copyWith(primaryColor: Colors.blueAccent),
                 child: TextFormField(
                   autofocus: true,
                   style: const TextStyle(fontSize: 25),
@@ -232,13 +235,11 @@ class _NewNotesState extends State<NewNotes> {
                   });
                 },
                 label: Text(
-                  widget.data == null
-                      ? "Upload Note"
-                      : "Update Note",
+                  widget.data == null ? "Upload Note" : "Update Note",
                 ),
                 icon: const Icon(Icons.add),
                 foregroundColor: Colors.white,
-                backgroundColor: _color,
+                backgroundColor: Colors.blueAccent,
               ),
             ],
           ),
