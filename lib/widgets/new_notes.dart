@@ -11,6 +11,8 @@ import '../providers/notes.dart';
 
 class NewNotes extends StatefulWidget {
   static const routeName = '/new-notes';
+  final Map<String, dynamic>? data;
+  const NewNotes(this.data);
   @override
   _NewNotesState createState() => _NewNotesState();
 }
@@ -21,10 +23,33 @@ class _NewNotesState extends State<NewNotes> {
   String? _fileURL;
 
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _subjectController = TextEditingController();
-  final TextEditingController _notesNameController = TextEditingController();
-  final TextEditingController _notesDetailsController = TextEditingController();
-  final Color _color = Colors.blueAccent;
+  TextEditingController _subjectController = TextEditingController();
+  TextEditingController _notesNameController = TextEditingController();
+  TextEditingController _notesDetailsController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.data != null) {
+      final Map<String, dynamic> data = widget.data ?? {};
+      _subjectController =
+          TextEditingController(text: data['subject'] as String);
+      _notesNameController =
+          TextEditingController(text: data['notesName'] as String);
+      _notesDetailsController =
+          TextEditingController(text: data['notesDetails'] as String);
+      _fileName = data['filename'] as String;
+      _fileURL = data['fileUrl'] as String;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subjectController.dispose();
+    _notesNameController.dispose();
+    _notesDetailsController.dispose();
+  }
 
   void _showErrorDialog(BuildContext context, String title, String content) {
     showDialog(
@@ -69,7 +94,8 @@ class _NewNotesState extends State<NewNotes> {
           child: Column(
             children: [
               Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
+                data:
+                    Theme.of(context).copyWith(primaryColor: Colors.blueAccent),
                 child: TextFormField(
                   autofocus: true,
                   style: const TextStyle(fontSize: 25),
@@ -85,7 +111,8 @@ class _NewNotesState extends State<NewNotes> {
                 ),
               ),
               Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
+                data:
+                    Theme.of(context).copyWith(primaryColor: Colors.blueAccent),
                 child: TextFormField(
                   autofocus: true,
                   style: const TextStyle(fontSize: 25),
@@ -101,7 +128,8 @@ class _NewNotesState extends State<NewNotes> {
                 ),
               ),
               Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
+                data:
+                    Theme.of(context).copyWith(primaryColor: Colors.blueAccent),
                 child: TextFormField(
                   autofocus: true,
                   style: const TextStyle(fontSize: 25),
@@ -123,7 +151,8 @@ class _NewNotesState extends State<NewNotes> {
                       if (result != null) {
                         final File file = File(result.files.single.path!);
 
-                        final int fileSize = await file.length();//REturns file sie in bytes
+                        final int fileSize =
+                            await file.length(); //REturns file sie in bytes
 
                         if (fileSize < 26214400) {
                           try {
@@ -177,24 +206,40 @@ class _NewNotesState extends State<NewNotes> {
                 onPressed: () {
                   setState(() {
                     if (_formKey.currentState!.validate()) {
-                      Provider.of<Notes>(context, listen: false).addNote(
+                      if (widget.data == null) {
+                        Provider.of<Notes>(context, listen: false).addNote(
+                            subject: _subjectController.text,
+                            notesName: _notesNameController.text,
+                            messageType: 1,
+                            messageBody: _notesDetailsController.text,
+                            user:
+                                Provider.of<AuthService>(context, listen: false)
+                                    .userId,
+                            filename: _fileName,
+                            fileURL: _fileURL);
+                      } else {
+                        Provider.of<Notes>(context, listen: false).updateNote(
+                          id: widget.data?['id'] as String,
                           subject: _subjectController.text,
                           notesName: _notesNameController.text,
-                          messageType: 1,
                           messageBody: _notesDetailsController.text,
+                          messageType: 1,
                           user: Provider.of<AuthService>(context, listen: false)
                               .userId,
                           filename: _fileName,
-                          fileURL: _fileURL);
-
+                          fileUrl: _fileURL,
+                        );
+                      }
                       Navigator.of(context).pop();
                     }
                   });
                 },
-                label: const Text("Upload Notes"),
+                label: Text(
+                  widget.data == null ? "Upload Note" : "Update Note",
+                ),
                 icon: const Icon(Icons.add),
                 foregroundColor: Colors.white,
-                backgroundColor: _color,
+                backgroundColor: Colors.blueAccent,
               ),
             ],
           ),

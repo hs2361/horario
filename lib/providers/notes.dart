@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/auth_service.dart';
 import 'note.dart';
 
 class Notes with ChangeNotifier {
@@ -73,6 +75,7 @@ class Notes with ChangeNotifier {
   }) async {
     _notes.add(
       Note(
+        id: DateTime.now().toString(),
         user: user,
         notesName: notesName,
         sentTime: currTime,
@@ -90,7 +93,7 @@ class Notes with ChangeNotifier {
         firestore.collection('groups').doc(groupId).collection('chat');
 
     try {
-      await notes.add({
+      final DocumentReference notesDoc = await notes.add({
         'message_body': messageBody,
         'message_type': messageType,
         'user': user,
@@ -100,10 +103,57 @@ class Notes with ChangeNotifier {
         'filename': filename,
         'fileurl': fileURL,
       });
+      _notes.last.id = notesDoc.id;
       notifyListeners();
     } on Exception {
       rethrow;
     }
+  }
+
+  Future<void> updateNote({
+    required String id,
+    String? user,
+    String? notesName,
+    int? messageType,
+    String? messageBody,
+    String? subject,
+    String? filename,
+    String? fileUrl,
+  }) async {
+    final int index = _notes.indexWhere((c) => c.id == id);
+    _notes[index].notesName = notesName ?? _notes[index].notesName;
+    _notes[index].messageType = messageType ?? _notes[index].messageType;
+    _notes[index].messageBody = messageBody ?? _notes[index].messageBody;
+    _notes[index].subject = subject ?? _notes[index].subject;
+    _notes[index].filename = filename ?? _notes[index].filename;
+    _notes[index].fileUrl = fileUrl ?? _notes[index].fileUrl;
+
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    //TODO: make logic for finding group ID from user profile
+    const String groupId = "PgbZfCnPgRQPRxSEwG5a";
+    final DocumentReference c =
+        firestore.collection('groups').doc(groupId).collection('chat').doc(id);
+
+    await c.update({
+      'message_body': messageBody ?? _notes[index].messageBody,
+      'message_type': messageType ?? _notes[index].messageType,
+      'notes_name': notesName ?? _notes[index].notesName,
+      'subject': subject ?? _notes[index].subject,
+      'filename': filename ?? _notes[index].filename,
+      'fileurl': fileUrl ?? _notes[index].fileUrl
+    });
+    notifyListeners();
+  }
+
+  Future<void> deleteNote(String id) async {
+    _notes.removeWhere((c) => c.id == id);
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    //TODO: make logic for finding group ID from user profile
+    const String groupId = "PgbZfCnPgRQPRxSEwG5a";
+    final DocumentReference c =
+        firestore.collection('groups').doc(groupId).collection('chat').doc(id);
+    await c.delete();
+    notifyListeners();
   }
 
   List<Note> get groupchat {
@@ -161,6 +211,7 @@ class Notes with ChangeNotifier {
         final String currSubject = notesData?['subject'] as String;
         _notes.add(
           Note(
+              id: doc.id,
               subject: currSubject,
               messageType: notesData?['message_type'] as int,
               messageBody: notesData?['message_body'] as String,
