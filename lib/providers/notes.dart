@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_service.dart';
+import 'auth_service.dart';
 import 'note.dart';
 
 class Notes with ChangeNotifier {
@@ -88,7 +89,7 @@ class Notes with ChangeNotifier {
     );
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     //TODO: make logic for finding group ID from user profile
-    const String groupId = "PgbZfCnPgRQPRxSEwG5a";
+    final String groupId = Provider.of<AuthService>(context).getGroupId!;
     final CollectionReference notes =
         firestore.collection('groups').doc(groupId).collection('chat');
 
@@ -130,7 +131,7 @@ class Notes with ChangeNotifier {
 
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     //TODO: make logic for finding group ID from user profile
-    const String groupId = "PgbZfCnPgRQPRxSEwG5a";
+    final String groupId = Provider.of<AuthService>(context).getGroupId!;
     final DocumentReference c =
         firestore.collection('groups').doc(groupId).collection('chat').doc(id);
 
@@ -149,7 +150,7 @@ class Notes with ChangeNotifier {
     _notes.removeWhere((c) => c.id == id);
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     //TODO: make logic for finding group ID from user profile
-    const String groupId = "PgbZfCnPgRQPRxSEwG5a";
+    final String groupId = Provider.of<AuthService>(context).getGroupId!;
     final DocumentReference c =
         firestore.collection('groups').doc(groupId).collection('chat').doc(id);
     await c.delete();
