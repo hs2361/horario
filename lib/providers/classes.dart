@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:horario/providers/notification_service.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_service.dart';
@@ -8,8 +9,8 @@ import './class.dart';
 
 class Classes with ChangeNotifier {
   BuildContext context;
-
-  Classes(this.context);
+  NotificationService? notificationService;
+  Classes(this.context, this.notificationService);
 
   //dummy data for testing purposes
   // final List<Class> _classes = [
@@ -99,6 +100,7 @@ class Classes with ChangeNotifier {
         'color': color.value
       });
       _classes.last.id = classDoc.id;
+      await notificationService!.scheduleNotification(_classes.last);
       notifyListeners();
     } on Exception {
       rethrow;

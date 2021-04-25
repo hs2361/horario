@@ -190,7 +190,7 @@ class _NewAssignmentState extends State<NewAssignment> {
               ),
               FloatingActionButton.extended(
                 heroTag: "createBtn",
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     if (_deadline == null) {
                       _showErrorDialog(
@@ -200,13 +200,14 @@ class _NewAssignmentState extends State<NewAssignment> {
                       );
                     } else {
                       if (widget.data == null) {
-                        Provider.of<Classes>(context, listen: false).addClass(
+                        await Provider.of<Classes>(context, listen: false)
+                            .addClass(
                           subject: _subjectController.text,
                           deadline: _deadline,
                           color: _color,
                         );
                       } else {
-                        Provider.of<Classes>(context, listen: false)
+                        await Provider.of<Classes>(context, listen: false)
                             .updateClass(
                           id: widget.data?['id'] as String,
                           subject: _subjectController.text,

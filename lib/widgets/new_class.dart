@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:horario/providers/notification_service.dart';
 import 'package:provider/provider.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 
@@ -115,7 +116,6 @@ class _NewClassState extends State<NewClass> {
           }
         });
       },
-      interval: const Duration(minutes: 30),
       padding: 30,
       strokeWidth: 20,
       handlerRadius: 14,
@@ -343,7 +343,7 @@ class _NewClassState extends State<NewClass> {
               ),
               FloatingActionButton.extended(
                 heroTag: "createBtn",
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     if (_schedule.isEmpty) {
                       _showErrorDialog(
@@ -353,7 +353,8 @@ class _NewClassState extends State<NewClass> {
                       );
                     } else {
                       if (widget.data == null) {
-                        Provider.of<Classes>(context, listen: false).addClass(
+                        await Provider.of<Classes>(context, listen: false)
+                            .addClass(
                           subject: _subjectController.text,
                           schedule: _schedule,
                           color: _color,
@@ -362,7 +363,7 @@ class _NewClassState extends State<NewClass> {
                               : _linkController.text,
                         );
                       } else {
-                        Provider.of<Classes>(context, listen: false)
+                        await Provider.of<Classes>(context, listen: false)
                             .updateClass(
                           id: widget.data?['id'] as String,
                           subject: _subjectController.text,

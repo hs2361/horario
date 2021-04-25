@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_service.dart';
+import '../providers/notification_service.dart';
 import '../widgets/new_assignment.dart';
 import '../widgets/new_class.dart';
 import '../widgets/new_notes.dart';
@@ -15,6 +16,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await Provider.of<NotificationService>(context, listen: false)
+          .initializeService();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthService>(

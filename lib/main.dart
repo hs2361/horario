@@ -8,6 +8,7 @@ import './providers/class.dart';
 import './providers/classes.dart';
 import './providers/note.dart';
 import './providers/notes.dart';
+import './providers/notification_service.dart';
 import './screens/auth_screen.dart';
 import './screens/home_screen.dart';
 
@@ -68,13 +69,21 @@ class _MyAppState extends State<MyApp> {
           create: (_) => Class(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => Classes(ctx),
-        ),
-        ChangeNotifierProvider(
           create: (_) => Note(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => Notes(ctx)
+          create: (ctx) => Notes(ctx),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => Classes(ctx, null),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => NotificationService(),
+        ),
+        ChangeNotifierProxyProvider<NotificationService, Classes>(
+          create: (ctx) => Classes(ctx, null),
+          update: (ctx, notificationService, previous) =>
+              Classes(ctx, notificationService),
         )
       ],
       child: StreamBuilder<User?>(
