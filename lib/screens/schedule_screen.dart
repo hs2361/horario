@@ -42,7 +42,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       );
 
   void showNewClassForm(BuildContext context) {
-    Navigator.of(context).pushNamed(NewClass.routeName);
+    Navigator.of(context).pushReplacementNamed(NewClass.routeName);
   }
 
   void showNewAssignmentForm(BuildContext context) {

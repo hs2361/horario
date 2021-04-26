@@ -121,6 +121,7 @@ class Classes with ChangeNotifier {
     _classes[index].deadline = deadline ?? _classes[index].deadline;
     _classes[index].schedule = schedule ?? _classes[index].schedule;
     _classes[index].color = color ?? _classes[index].color;
+    await notificationService!.cancelNotifications(_classes[index]);
 
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final String userId =
@@ -142,11 +143,14 @@ class Classes with ChangeNotifier {
                   : null),
       'color': (color ?? _classes[index].color).value
     });
+    await notificationService!.scheduleNotification(_classes[index]);
     notifyListeners();
   }
 
   Future<void> deleteClass(String id) async {
-    _classes.removeWhere((c) => c.id == id);
+    final int index = _classes.indexWhere((c) => c.id == id);
+    await notificationService!.cancelNotifications(_classes[index]);
+    _classes.removeAt(index);
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final String userId =
         Provider.of<AuthService>(context, listen: false).userId!;

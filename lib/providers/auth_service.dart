@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
@@ -92,6 +93,8 @@ class AuthService with ChangeNotifier {
 
     for (final QueryDocumentSnapshot doc in firestoreGroups) {
       groupId = doc.id;
+      final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+      _fcm.subscribeToTopic(groupId!);
     }
   }
 }

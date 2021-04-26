@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:horario/providers/notification_service.dart';
+import 'package:horario/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 
@@ -362,6 +362,8 @@ class _NewClassState extends State<NewClass> {
                               ? null
                               : _linkController.text,
                         );
+                        Navigator.of(context)
+                            .pushReplacementNamed(HomeScreen.routeName);
                       } else {
                         await Provider.of<Classes>(context, listen: false)
                             .updateClass(
@@ -373,8 +375,9 @@ class _NewClassState extends State<NewClass> {
                               ? null
                               : _linkController.text,
                         );
+                        Navigator.of(context)
+                            .pushReplacementNamed(HomeScreen.routeName);
                       }
-                      Navigator.of(context).pop();
                     }
                   }
                 },

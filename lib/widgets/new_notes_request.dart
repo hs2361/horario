@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:horario/providers/auth_service.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/notes.dart';
@@ -95,12 +96,14 @@ class _NewNotesRequestState extends State<NewNotesRequest> {
                 onPressed: () {
                   setState(() {
                     if (_formKey.currentState!.validate()) {
+                      final String userId = Provider.of<AuthService>(context, listen: false)
+                                    .userId!;
                       Provider.of<Notes>(context, listen: false).addNote(
                         subject: _subjectController.text,
                         notesName: _notesNameController.text,
                         messageType: 0,
                         messageBody: _notesDetailsController.text,
-                        user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
+                        user: userId,
                       );
                       Navigator.of(context).pop();
                     }

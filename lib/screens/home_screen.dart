@@ -11,6 +11,7 @@ import './profile_screen.dart';
 import './tabs_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const routeName = '/';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -30,8 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer<AuthService>(
       builder: (context, auth, _) => MaterialApp(
         title: 'Horario',
-        // setting home screen as tasks screen
-        home: const TabsScreen(0),
         theme: ThemeData(
           // dark theme
           brightness: Brightness.dark,
@@ -65,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         routes: {
+          HomeScreen.routeName: (_) => const TabsScreen(0),
           ProfileScreen.routeName: (_) => ProfileScreen(auth),
           NewNotesRequest.routeName: (_) => NewNotesRequest(),
         },

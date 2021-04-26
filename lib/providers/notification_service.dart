@@ -1,3 +1,5 @@
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,6 +11,12 @@ import './class.dart';
 
 class NotificationService with ChangeNotifier {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  static const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    'This channel is used for important notifications.', // description
+    importance: Importance.high,
+  );
 
   Future<void> initializeService() async {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -34,6 +42,7 @@ class NotificationService with ChangeNotifier {
         }
       },
     );
+    await initializeFCM();
   }
 
   tz.TZDateTime _nextInstanceOfTime(TimeOfDay time) {
@@ -50,7 +59,11 @@ class NotificationService with ChangeNotifier {
     final int tenMinutesBefore =
         timeSlot.start.hour * 60 + timeSlot.start.minute - 10;
     tz.TZDateTime scheduledDate = _nextInstanceOfTime(
-        TimeOfDay(hour: tenMinutesBefore ~/ 60, minute: tenMinutesBefore % 60));
+      TimeOfDay(
+        hour: tenMinutesBefore ~/ 60,
+        minute: tenMinutesBefore % 60,
+      ),
+    );
     while (scheduledDate.weekday != timeSlot.weekday) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
@@ -63,7 +76,7 @@ class NotificationService with ChangeNotifier {
         await flutterLocalNotificationsPlugin.zonedSchedule(
           t.start.hour * 60 + t.start.minute + t.weekday,
           'Reminder: ${_class.subject} class',
-          'Your class starts at ${t.start.hour}',
+          'Your class starts in 10 minutes',
           _nextInstanceOfTimeSlot(t),
           NotificationDetails(
             android: AndroidNotificationDetails(
@@ -109,6 +122,35 @@ class NotificationService with ChangeNotifier {
         payload: _class.link,
       );
       notifyListeners();
+    }
+  }
+
+  Future initializeFCM() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final RemoteNotification notification = message.notification!;
+      flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channel.description,
+            ),
+          ));
+    });
+  }
+  
+  Future<void> cancelNotifications(Class _class) async {
+    if (_class.schedule != null) {
+      for (final TimeSlot t in _class.schedule ?? []) {
+        await flutterLocalNotificationsPlugin
+            .cancel(t.start.hour * 60 + t.start.minute + t.weekday);
+      }
+    } else {
+      await flutterLocalNotificationsPlugin
+          .cancel(((_class.deadline?.millisecondsSinceEpoch) ?? 0) ~/ 60000);
     }
   }
 }

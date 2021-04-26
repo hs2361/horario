@@ -41,7 +41,7 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 google-services.json
-
+horario-b3703-firebase-adminsdk-v5o4t-a6b6d16f73.json
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
