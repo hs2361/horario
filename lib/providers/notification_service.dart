@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -117,9 +119,10 @@ class NotificationService with ChangeNotifier {
         'Your assignment is due in 10 minutes',
         // ignore: cast_nullable_to_non_nullable
         tz.TZDateTime.from(
-            _class.deadline?.subtract(const Duration(minutes: 10)) ??
-                DateTime.now(),
-            tz.local),
+          _class.deadline?.subtract(const Duration(minutes: 10)) ??
+              DateTime.now(),
+          tz.local,
+        ),
         NotificationDetails(
           android: AndroidNotificationDetails(
             _class.id,
@@ -145,9 +148,18 @@ class NotificationService with ChangeNotifier {
     required String token,
     required String groupId,
   }) async {
-    await http.post(Uri.parse("http://localhost:5000/send_notification"),
-        headers: {"Authorization": "Bearer $token"},
-        body: {"title": title, "body": body, "topic": groupId});
+    await http.post(
+      Uri.parse("https://horario--api.herokuapp.com/send_notification/"),
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
+      body: json.encode({
+        "title": title,
+        "body": body,
+        "topic": groupId,
+      }),
+    );
   }
 
   Future<void> cancelNotifications(Class _class) async {

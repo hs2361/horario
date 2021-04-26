@@ -69,6 +69,9 @@ class _MyAppState extends State<MyApp> {
           create: (_) => Class(),
         ),
         ChangeNotifierProvider(
+          create: (_) => NotificationService(),
+        ),
+        ChangeNotifierProvider(
           create: (_) => Note(),
         ),
         ChangeNotifierProvider(
@@ -76,9 +79,6 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (ctx) => Classes(ctx, null),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => NotificationService(),
         ),
         ChangeNotifierProxyProvider<NotificationService, Classes>(
           create: (ctx) => Classes(ctx, null),
@@ -96,7 +96,6 @@ class _MyAppState extends State<MyApp> {
             );
           } else {
             if (snapshot.data?.emailVerified ?? false) {
-              snapshot.data?.getIdToken().then((value) => print(value));
               return MaterialApp(
                 theme: theme,
                 home: HomeScreen(),

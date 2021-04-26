@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:horario/providers/notification_service.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart';
 import '../providers/auth_service.dart';
-import 'auth_service.dart';
-import 'note.dart';
+import './auth_service.dart';
+import './note.dart';
 
 class Notes with ChangeNotifier {
   BuildContext context;
@@ -16,54 +14,7 @@ class Notes with ChangeNotifier {
   Notes(this.context);
 
   final List<String> _subjects = [];
-  //dummy data for testing purposes
-  final List<Note> _notes = [
-    // Note(
-    //   notesName: "Physics lesson 1",
-    //   user: "UID",
-    //   messageType: 0,
-    //   messageBody: "Notes chahiye plzplzplzplzp lzplzpzlp zplzpzllzpz lppzllzplzpl zpzlpzlpz lzplzplz zlpzlpzplz lzpoplzplzlp zlpzlplzp",
-    //   subject: "Physics"
-    // ),
-    // Note(
-    //   notesName: "Chemistry lesson 2",
-    //   user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
-    //   messageType: 1,
-    //   messageBody: "Notes lele",
-    //   subject: "Chemistry",
-    //   filename: "chem2.pdf"
-    // ),
-    //     Note(
-    //   notesName: "Physics lesson 1",
-    //   user: "UID",
-    //   messageType: 0,
-    //   messageBody: "Notes chahiye",
-    //   subject: "Physics"
-    // ),
-    // Note(
-    //   notesName: "Chemistry lesson 2",
-    //   user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
-    //   messageType: 1,
-    //   messageBody: "Notes lele",
-    //   subject: "Chemistry",
-    //   filename: "chem2.pdf"
-    // ),
-    //     Note(
-    //   notesName: "Physics lesson 1",
-    //   user: "UID",
-    //   messageType: 0,
-    //   messageBody: "Notes chahiye",
-    //   subject: "Physics"
-    // ),
-    // Note(
-    //   notesName: "Chemistry lesson 2",
-    //   user: "2zZWzj2gOuOz2XrJIifcoTMqt3C3",
-    //   messageType: 1,
-    //   messageBody: "Notes lele",
-    //   subject: "Chemistry",
-    //   filename: "chem2.pdf"
-    // )
-  ];
+  final List<Note> _notes = [];
 
   //Real code
   Future<void> addNote({
@@ -110,7 +61,8 @@ class Notes with ChangeNotifier {
       _notes.last.id = notesDoc.id;
 
       final List<String> actions = ["Requested", "Uploaded"];
-      await Provider.of<NotificationService>(context).sendGroupNotification(
+      await Provider.of<NotificationService>(context, listen: false)
+          .sendGroupNotification(
         title: "Notes for $notesName ${actions[messageType!]}",
         body: "Subject: $subject",
         token: (await Provider.of<AuthService>(context, listen: false).token) ??
@@ -162,7 +114,8 @@ class Notes with ChangeNotifier {
     _notes.removeWhere((c) => c.id == id);
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     //TODO: make logic for finding group ID from user profile
-    final String groupId = Provider.of<AuthService>(context).getGroupId!;
+    final String groupId =
+        Provider.of<AuthService>(context, listen: false).getGroupId!;
     final DocumentReference c =
         firestore.collection('groups').doc(groupId).collection('chat').doc(id);
     await c.delete();
@@ -224,21 +177,23 @@ class Notes with ChangeNotifier {
         final String currSubject = notesData?['subject'] as String;
         _notes.add(
           Note(
-              id: doc.id,
-              subject: currSubject,
-              messageType: notesData?['message_type'] as int,
-              messageBody: notesData?['message_body'] as String,
-              notesName: notesData?['notes_name'] as String,
-              sentTime: notesData?['sent_at'].toDate() as DateTime,
-              user: notesData?['user'] as String,
-              filename: notesData?['filename'] as String,
-              fileUrl: notesData?['fileurl'] as String),
+            id: doc.id,
+            subject: currSubject,
+            messageType: notesData?['message_type'] as int,
+            messageBody: notesData?['message_body'] as String,
+            notesName: notesData?['notes_name'] as String,
+            sentTime: notesData?['sent_at'].toDate() as DateTime,
+            user: notesData?['user'] as String,
+            filename: notesData?['filename'] asng? Stri,
+            fileUrl: notesData?['fileurl'] as String?,
+          ),
         );
 
         if (!_subjects.contains(currSubject)) {
           _subjects.add(currSubject);
         }
       }
+      _notes.sort((a, b) => a.sentTime!.compareTo(b.sentTime!));
       notifyListeners();
     } on Exception {
       rethrow;
