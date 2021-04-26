@@ -20,6 +20,8 @@ class AuthService with ChangeNotifier {
   String? get email => FirebaseAuth.instance.currentUser?.email;
   String? get userId => FirebaseAuth.instance.currentUser?.uid;
   String? get getGroupId => groupId;
+  Future<String?> get token async =>
+      await FirebaseAuth.instance.currentUser?.getIdToken();
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();

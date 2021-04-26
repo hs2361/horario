@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:horario/providers/notification_service.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart';
 import '../providers/auth_service.dart';
@@ -89,7 +91,8 @@ class Notes with ChangeNotifier {
     );
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     //TODO: make logic for finding group ID from user profile
-    final String groupId = Provider.of<AuthService>(context,listen: false).getGroupId!;
+    final String groupId =
+        Provider.of<AuthService>(context, listen: false).getGroupId!;
     final CollectionReference notes =
         firestore.collection('groups').doc(groupId).collection('chat');
 
@@ -106,13 +109,14 @@ class Notes with ChangeNotifier {
       });
       _notes.last.id = notesDoc.id;
 
-      final List<String> actions = ["Requested","Uploaded"];
-      final String notificationTitle = "Notes for $notesName ${actions[messageType!]}";
-      final String notificationBody = "Subject: $subject";
-      final String url = 'http://127.0.0.1:5000/$groupId/$notificationTitle/$notificationBody';
-
-    // ignore: unused_local_variable
-    final Response response = await put(Uri.parse(url));
+      final List<String> actions = ["Requested", "Uploaded"];
+      await Provider.of<NotificationService>(context).sendGroupNotification(
+        title: "Notes for $notesName ${actions[messageType!]}",
+        body: "Subject: $subject",
+        token: (await Provider.of<AuthService>(context, listen: false).token) ??
+            "",
+        groupId: groupId,
+      );
       notifyListeners();
     } on Exception {
       rethrow;

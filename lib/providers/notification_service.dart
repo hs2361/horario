@@ -1,8 +1,8 @@
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
@@ -42,7 +42,21 @@ class NotificationService with ChangeNotifier {
         }
       },
     );
-    await initializeFCM();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final RemoteNotification notification = message.notification!;
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channel.description,
+          ),
+        ),
+      );
+    });
   }
 
   tz.TZDateTime _nextInstanceOfTime(TimeOfDay time) {
@@ -125,23 +139,17 @@ class NotificationService with ChangeNotifier {
     }
   }
 
-  Future initializeFCM() async {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      final RemoteNotification notification = message.notification!;
-      flutterLocalNotificationsPlugin.show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              channel.description,
-            ),
-          ));
-    });
+  Future<void> sendGroupNotification({
+    required String title,
+    required String body,
+    required String token,
+    required String groupId,
+  }) async {
+    await http.post(Uri.parse("http://localhost:5000/send_notification"),
+        headers: {"Authorization": "Bearer $token"},
+        body: {"title": title, "body": body, "topic": groupId});
   }
-  
+
   Future<void> cancelNotifications(Class _class) async {
     if (_class.schedule != null) {
       for (final TimeSlot t in _class.schedule ?? []) {

@@ -96,6 +96,7 @@ class _MyAppState extends State<MyApp> {
             );
           } else {
             if (snapshot.data?.emailVerified ?? false) {
+              snapshot.data?.getIdToken().then((value) => print(value));
               return MaterialApp(
                 theme: theme,
                 home: HomeScreen(),
