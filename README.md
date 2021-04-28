@@ -21,6 +21,9 @@ If you wish to set-up the project locally, follow these instructions:
 * Create a new [Firebase project](https://console.firebase.google.com)
 * Add an Android app to the project, with the package name "com.horario.horario"
 * Download the google-services.json file and add it to horario/android/app/
+* Download the Firebase Admin SDK private key file and add it to horario/api
+* Replace the name of the file [here](https://github.com/hs2361/horario/blob/master/api/main.py#L7) with the name of your file
+* Host the API on Heroku, or any cloud provider of your choice, and replace your hosted URL with the URL given in the app files
 * Then install the app's dependencies as follows:
 ```sh
 cd horario/
