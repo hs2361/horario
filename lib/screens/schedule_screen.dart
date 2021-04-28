@@ -46,7 +46,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   void showNewAssignmentForm(BuildContext context) {
-    Navigator.of(context).pushNamed(NewAssignment.routeName);
+    Navigator.of(context).pushReplacementNamed(NewAssignment.routeName);
   }
 
   Widget _showFABPopupMenu() => PopupMenuButton<int>(
@@ -75,12 +75,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           height: double.infinity,
           width: double.infinity,
           decoration: ShapeDecoration(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).accentColor,
             shape: const CircleBorder(),
           ),
-          child: Icon(
+          child: const Icon(
             Icons.add,
-            color: Theme.of(context).accentColor,
+            color: Colors.white,
           ),
         ),
         offset: const Offset(0, -140),
@@ -118,6 +118,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
             body: Column(
               children: [
+                const SizedBox(
+                  height: 8,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -127,6 +130,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                         today.subtract(Duration(days: today.weekday - day)),
                       ),
                   ],
+                ),
+                const SizedBox(
+                  height: 16,
                 ),
                 Expanded(
                   child: ListView.builder(

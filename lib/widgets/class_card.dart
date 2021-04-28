@@ -57,8 +57,7 @@ class ClassCard extends StatelessWidget {
         });
       },
       child: Container(
-        padding: const EdgeInsets.all(8),
-        height: 100,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Card(
           color: c.color,
           child: ListTile(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:horario/providers/auth_service.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/auth_service.dart';
 import '../providers/notes.dart';
 
 class NewNotesRequest extends StatefulWidget {
@@ -15,8 +15,7 @@ class _NewNotesRequestState extends State<NewNotesRequest> {
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _notesNameController = TextEditingController();
   final TextEditingController _notesDetailsController = TextEditingController();
-  final Color _color = Colors.blueAccent;
-  
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,77 +41,81 @@ class _NewNotesRequestState extends State<NewNotesRequest> {
           key: _formKey,
           child: Column(
             children: [
-              Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
-                child: TextFormField(
-                  autofocus: true,
-                  style: const TextStyle(fontSize: 25),
-                  controller: _notesNameController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Enter the name of requested notes";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Request for: ',
-                  ),
+              TextFormField(
+                textInputAction: TextInputAction.next,
+                autofocus: true,
+                controller: _notesNameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Enter the name of your request";
+                  }
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Request for: ',
                 ),
               ),
-              Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
-                child: TextFormField(
-                  autofocus: true,
-                  style: const TextStyle(fontSize: 25),
-                  controller: _subjectController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Enter a title";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Subject: ',
-                  ),
+              TextFormField(
+                textInputAction: TextInputAction.next,
+                autofocus: true,
+                controller: _subjectController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Enter a title";
+                  }
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Subject: ',
                 ),
               ),
-              Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
-                child: TextFormField(
-                  autofocus: true,
-                  style: const TextStyle(fontSize: 25),
-                  controller: _notesDetailsController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Enter details: ";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Enter Details: ',
-                  ),
+              TextFormField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                textInputAction: TextInputAction.done,
+                autofocus: true,
+                controller: _notesDetailsController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Enter details: ";
+                  }
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Enter Details: ',
                 ),
               ),
               const Expanded(child: SizedBox()),
               FloatingActionButton.extended(
-                heroTag: "addrequestbtn",
-                onPressed: () {
-                  setState(() {
-                    if (_formKey.currentState!.validate()) {
-                      final String userId = Provider.of<AuthService>(context, listen: false)
-                                    .userId!;
-                      Provider.of<Notes>(context, listen: false).addNote(
-                        subject: _subjectController.text,
-                        notesName: _notesNameController.text,
-                        messageType: 0,
-                        messageBody: _notesDetailsController.text,
-                        user: userId,
-                      );
-                      Navigator.of(context).pop();
-                    }
-                  });
+                heroTag: "addRequestBtn",
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    final String userId =
+                        Provider.of<AuthService>(context, listen: false)
+                            .userId!;
+                    await Provider.of<Notes>(context, listen: false).addNote(
+                      subject: _subjectController.text,
+                      notesName: _notesNameController.text,
+                      messageType: 0,
+                      messageBody: _notesDetailsController.text,
+                      user: userId,
+                    );
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    Navigator.of(context).pop();
+                  }
                 },
-                label: const Text("Make the Request"),
-                icon: const Icon(Icons.add),
+                label: _isLoading
+                    ? const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.white,
+                        ),
+                      )
+                    : const Text("Send Request"),
+                icon: const Icon(Icons.send),
                 foregroundColor: Colors.white,
-                backgroundColor: _color,
+                backgroundColor: Theme.of(context).accentColor,
               ),
             ],
           ),

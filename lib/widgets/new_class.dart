@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:horario/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 
 import '../providers/class.dart';
 import '../providers/classes.dart';
+import '../screens/home_screen.dart';
 
 class NewClass extends StatefulWidget {
   static const routeName = '/new-class';
@@ -22,6 +22,7 @@ class _NewClassState extends State<NewClass> {
   List<TimeSlot> _schedule = [];
   Color _color = Colors.blueAccent;
   String? dropdownValue;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -48,7 +49,7 @@ class _NewClassState extends State<NewClass> {
     final List<Color> _colors = [
       Colors.pink,
       Colors.green,
-      Colors.greenAccent,
+      Colors.orange,
       Colors.blueAccent,
       Colors.purple,
     ];
@@ -119,8 +120,9 @@ class _NewClassState extends State<NewClass> {
       padding: 30,
       strokeWidth: 20,
       handlerRadius: 14,
-      strokeColor: Theme.of(context).accentColor.withAlpha(100),
-      handlerColor: Theme.of(context).accentColor,
+      strokeColor: _color.withAlpha(100),
+      interval: const Duration(minutes: 30),
+      handlerColor: _color,
       backgroundColor: Theme.of(context).backgroundColor,
       snap: true,
       timeTextStyle: const TextStyle(
@@ -155,239 +157,272 @@ class _NewClassState extends State<NewClass> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0.0,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        return true;
+      },
+      child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text(
-          "Add Class",
-          style: TextStyle(
-            fontSize: 20,
-            fontFamily: 'Montserrat',
-            fontWeight: FontWeight.w300,
-            color: Theme.of(context).textTheme.bodyText1?.color,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+            },
+          ),
+          centerTitle: true,
+          elevation: 0.0,
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text(
+            "Add Class",
+            style: TextStyle(
+              fontSize: 20,
+              fontFamily: 'Montserrat',
+              fontWeight: FontWeight.w300,
+              color: Theme.of(context).textTheme.bodyText1?.color,
+            ),
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Theme(
-                data: Theme.of(context).copyWith(primaryColor: _color),
-                child: TextFormField(
-                  autofocus: true,
-                  style: const TextStyle(fontSize: 25),
-                  controller: _subjectController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Enter a title";
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Subject',
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Pick a colour for the class",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: _color,
-                    ),
-                    onPressed: showColorPicker,
-                    child: const Text(
-                      'PICK',
-                    ),
-                  ),
-                ],
-              ),
-              Theme(
-                data: Theme.of(context)
-                    .copyWith(primaryColor: Theme.of(context).accentColor),
-                child: TextFormField(
-                  keyboardType: TextInputType.url,
-                  autofocus: true,
-                  style: const TextStyle(fontSize: 15),
-                  controller: _linkController,
-                  decoration: const InputDecoration(
-                    labelText: 'Link',
-                  ),
-                  validator: (value) {
-                    if (value != null && value.isNotEmpty) {
-                      if (!Uri.parse(value).isAbsolute) {
-                        return "Enter a valid URL";
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Theme(
+                  data: Theme.of(context).copyWith(accentColor: _color),
+                  child: TextFormField(
+                    autofocus: true,
+                    style: const TextStyle(fontSize: 20),
+                    textInputAction: TextInputAction.next,
+                    controller: _subjectController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Enter a subject";
                       }
-                    } else {
-                      return null;
-                    }
-                  },
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.all(20.0),
-                child: const Center(
-                  child: Text(
-                    "SCHEDULE",
-                    style: TextStyle(fontSize: 15),
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Subject',
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (ctx, index) {
-                    const List<String> days = [
-                      'Monday',
-                      'Tuesday',
-                      'Wednesday',
-                      'Thursday',
-                      'Friday',
-                      'Saturday',
-                      'Sunday'
-                    ];
-
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        DropdownButton<String>(
-                          items: days
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                value,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          value: days[_schedule[index].weekday - 1],
-                          icon: Icon(
-                            Icons.arrow_downward,
-                            color: _color,
-                          ),
-                          elevation: 16,
-                          underline: Container(
-                            height: 2,
-                            color: _color,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              if (newValue != null) {
-                                _schedule[index].weekday =
-                                    days.indexOf(newValue) + 1;
-                              }
-                            });
-                          },
-                        ),
-                        ElevatedButton(
-                          onPressed: () => showSchedulePicker(index),
-                          style: ElevatedButton.styleFrom(
-                            primary: _color,
-                          ),
-                          child: const Text("Pick Time"),
-                        ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.event_busy,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _schedule.removeAt(index);
-                            });
-                          },
-                        )
-                      ],
-                    );
-                  },
-                  itemCount: _schedule.length,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              FloatingActionButton.extended(
-                heroTag: "addBtn",
-                onPressed: () {
-                  setState(() {
-                    _schedule.add(
-                      TimeSlot(
-                        weekday: 1,
-                        start: const TimeOfDay(hour: 0, minute: 0),
-                        end: const TimeOfDay(hour: 0, minute: 0),
-                      ),
-                    );
-                  });
-                },
-                label: const Text("Add Schedule"),
-                icon: const Icon(Icons.add),
-                foregroundColor: Colors.white,
-                backgroundColor: _color,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              FloatingActionButton.extended(
-                heroTag: "createBtn",
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    if (_schedule.isEmpty) {
-                      _showErrorDialog(
-                        context,
-                        "Error",
-                        "Schedule cannot be empty",
-                      );
-                    } else {
-                      if (widget.data == null) {
-                        await Provider.of<Classes>(context, listen: false)
-                            .addClass(
-                          subject: _subjectController.text,
-                          schedule: _schedule,
-                          color: _color,
-                          link: _linkController.text.isEmpty
-                              ? null
-                              : _linkController.text,
-                        );
-                        Navigator.of(context)
-                            .pushReplacementNamed(HomeScreen.routeName);
+                Theme(
+                  data: Theme.of(context).copyWith(accentColor: _color),
+                  child: TextFormField(
+                    keyboardType: TextInputType.url,
+                    style: const TextStyle(fontSize: 20),
+                    textInputAction: TextInputAction.done,
+                    controller: _linkController,
+                    decoration: const InputDecoration(
+                      labelText: 'Link',
+                    ),
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty) {
+                        if (!Uri.parse(value).isAbsolute) {
+                          return "Enter a valid URL";
+                        }
                       } else {
-                        await Provider.of<Classes>(context, listen: false)
-                            .updateClass(
-                          id: widget.data?['id'] as String,
-                          subject: _subjectController.text,
-                          schedule: _schedule,
-                          color: _color,
-                          link: _linkController.text.isEmpty
-                              ? null
-                              : _linkController.text,
+                        return null;
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Pick a colour for the class",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: _color,
+                      ),
+                      onPressed: showColorPicker,
+                      child: const Text(
+                        'PICK',
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  margin: const EdgeInsets.all(20.0),
+                  child: const Center(
+                    child: Text(
+                      "SCHEDULE",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (ctx, index) {
+                      const List<String> days = [
+                        'Monday',
+                        'Tuesday',
+                        'Wednesday',
+                        'Thursday',
+                        'Friday',
+                        'Saturday',
+                        'Sunday'
+                      ];
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          DropdownButton<String>(
+                            items: days
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            value: days[_schedule[index].weekday - 1],
+                            icon: Icon(
+                              Icons.arrow_downward,
+                              color: _color,
+                            ),
+                            elevation: 16,
+                            underline: Container(
+                              height: 2,
+                              color: _color,
+                            ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                if (newValue != null) {
+                                  _schedule[index].weekday =
+                                      days.indexOf(newValue) + 1;
+                                }
+                              });
+                            },
+                          ),
+                          ElevatedButton(
+                            onPressed: () => showSchedulePicker(index),
+                            style: ElevatedButton.styleFrom(
+                              primary: _color,
+                            ),
+                            child: Text(
+                              "${_schedule[index].start.hour.toString().padLeft(2, '0')}:${_schedule[index].start.minute.toString().padLeft(2, '0')}" +
+                                  " - ${_schedule[index].end.hour.toString().padLeft(2, '0')}:${_schedule[index].end.minute.toString().padLeft(2, '0')}",
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _schedule.removeAt(index);
+                              });
+                            },
+                          )
+                        ],
+                      );
+                    },
+                    itemCount: _schedule.length,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                FloatingActionButton.extended(
+                  heroTag: "addBtn",
+                  onPressed: () {
+                    setState(() {
+                      _schedule.add(
+                        TimeSlot(
+                          weekday: 1,
+                          start: const TimeOfDay(hour: 0, minute: 0),
+                          end: const TimeOfDay(hour: 0, minute: 0),
+                        ),
+                      );
+                    });
+                  },
+                  label: const Text("Add Schedule"),
+                  icon: const Icon(Icons.add),
+                  foregroundColor: Colors.white,
+                  backgroundColor: _color,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                FloatingActionButton.extended(
+                  heroTag: "createBtn",
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      if (_schedule.isEmpty) {
+                        _showErrorDialog(
+                          context,
+                          "Error",
+                          "Schedule cannot be empty",
                         );
-                        Navigator.of(context)
-                            .pushReplacementNamed(HomeScreen.routeName);
+                      } else {
+                        if (widget.data == null) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          await Provider.of<Classes>(context, listen: false)
+                              .addClass(
+                            subject: _subjectController.text,
+                            schedule: _schedule,
+                            color: _color,
+                            link: _linkController.text.isEmpty
+                                ? null
+                                : _linkController.text,
+                          );
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          Navigator.of(context)
+                              .pushReplacementNamed(HomeScreen.routeName);
+                        } else {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          await Provider.of<Classes>(context, listen: false)
+                              .updateClass(
+                            id: widget.data?['id'] as String,
+                            subject: _subjectController.text,
+                            schedule: _schedule,
+                            color: _color,
+                            link: _linkController.text.isEmpty
+                                ? null
+                                : _linkController.text,
+                          );
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          Navigator.of(context)
+                              .pushReplacementNamed(HomeScreen.routeName);
+                        }
                       }
                     }
-                  }
-                },
-                label:
-                    Text(widget.data == null ? "Create Class" : "Update Class"),
-                icon: const Icon(Icons.check),
-                foregroundColor: Colors.white,
-                backgroundColor: _color,
-              )
-            ],
+                  },
+                  label: !_isLoading
+                      ? Text(
+                          widget.data == null ? "Create Class" : "Update Class",
+                        )
+                      : const CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                  icon: const Icon(Icons.check),
+                  foregroundColor: Colors.white,
+                  backgroundColor: _color,
+                )
+              ],
+            ),
           ),
         ),
       ),

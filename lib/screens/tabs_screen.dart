@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../widgets/main_drawer.dart';
+import '../providers/auth_service.dart';
 import './group_screen.dart';
 import './notes_screen.dart';
+import './profile_screen.dart';
 import './schedule_screen.dart';
 
 // Screen that displays all the tabs
@@ -112,10 +114,26 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String photoUrl =
+        Provider.of<AuthService>(context, listen: true).photoUrl ?? '';
     return Scaffold(
-      drawer: MainDrawer(),
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(ProfileScreen.routeName);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: CircleAvatar(
+              backgroundImage: (photoUrl == ''
+                  ? const AssetImage(
+                      'assets/images/default_pfp.png',
+                    )
+                  : NetworkImage(photoUrl)) as ImageProvider,
+            ),
+          ),
+        ),
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: Theme.of(context).primaryColor,

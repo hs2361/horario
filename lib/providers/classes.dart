@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:horario/providers/notification_service.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_service.dart';
+import '../providers/notification_service.dart';
 import './class.dart';
 
 class Classes with ChangeNotifier {

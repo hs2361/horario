@@ -71,12 +71,12 @@ class _GroupScreenState extends State<GroupScreen> {
           height: double.infinity,
           width: double.infinity,
           decoration: ShapeDecoration(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).accentColor,
             shape: const CircleBorder(),
           ),
-          child: Icon(
+          child: const Icon(
             Icons.add,
-            color: Theme.of(context).accentColor,
+            color: Colors.white,
           ),
         ),
         offset: const Offset(0, -140),
@@ -98,8 +98,7 @@ class _GroupScreenState extends State<GroupScreen> {
     } else {
       if (_noUserGroup) {
         return const Center(
-          child: Text(
-              "You need to be part of a group to use this feature."),
+          child: Text("You need to be part of a group to use this feature."),
         );
       } else {
         return Scaffold(
@@ -110,10 +109,9 @@ class _GroupScreenState extends State<GroupScreen> {
             child: _offsetPopup(),
           ),
           body: ListView.builder(
-            shrinkWrap: true,
-            itemCount: Provider.of<Notes>(context).groupchat.length,
+            itemCount: Provider.of<Notes>(context).groupChat.length,
             itemBuilder: (context, index) {
-              final List<Note> chat = Provider.of<Notes>(context).groupchat;
+              final List<Note> chat = Provider.of<Notes>(context).groupChat;
               return GroupChatCard(chat[index]);
             },
           ),

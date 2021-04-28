@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:horario/providers/auth_service.dart';
-import 'package:horario/providers/notes.dart';
-import 'package:horario/providers/note.dart';
-import 'package:horario/screens/subjectwise_notes_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/auth_service.dart';
+import '../providers/note.dart';
+import '../providers/notes.dart';
+import 'notes_by_subject_screen.dart';
+
 class NotesScreen extends StatefulWidget {
+  final List<Color> colors = [
+    Colors.pink,
+    Colors.redAccent,
+    Colors.orange,
+    Colors.green,
+    Colors.lightBlueAccent,
+    Colors.blueAccent,
+    Colors.purple,
+  ];
   @override
   _NotesScreenState createState() => _NotesScreenState();
 }
@@ -13,8 +23,6 @@ class NotesScreen extends StatefulWidget {
 class _NotesScreenState extends State<NotesScreen> {
   bool _isLoading = true;
   bool _noUserGroup = true;
-
-  void openNotesFromSubject(String subject) {}
 
   @override
   void initState() {
@@ -65,20 +73,40 @@ class _NotesScreenState extends State<NotesScreen> {
                         itemBuilder: (context, index) {
                           final List<String> subjects =
                               Provider.of<Notes>(context).subjectList;
-                          return ListTile(
-                              title: Text(subjects[index]),
+                          return Card(
+                            margin: const EdgeInsets.fromLTRB(5, 15, 5, 0),
+                            color: widget.colors[(subjects[index].length %
+                                widget.colors.length)],
+                            child: InkWell(
                               onTap: () {
                                 //Setter for current subject since arguments cant be passed using getters
-                                Provider.of<Notes>(context, listen: false)
-                                    .currSubject = subjects[index];
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        NotesBySubjectScreen(subjects[index]),
-                                  ),
+                                Navigator.of(context).pushNamed(
+                                  NotesBySubjectScreen.routeName,
+                                  arguments: subjects[index],
                                 );
-                              });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ListTile(
+                                  trailing: IconButton(
+                                    icon: const Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pushNamed(
+                                        NotesBySubjectScreen.routeName,
+                                        arguments: subjects[index],
+                                      );
+                                    },
+                                  ),
+                                  title: Text(
+                                    subjects[index],
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
                         },
                       ),
                     )
@@ -90,31 +118,50 @@ class _NotesScreenState extends State<NotesScreen> {
 
 class DataSearch extends SearchDelegate<String> {
   @override
+  ThemeData appBarTheme(BuildContext context) {
+    return Theme.of(context).copyWith(
+      primaryColor: Theme.of(context).primaryColor,
+      scaffoldBackgroundColor: Theme.of(context).primaryColor,
+    );
+  }
+
+  @override
   List<Widget> buildActions(BuildContext context) {
-    // TODO: implement buildActions
-    return [IconButton(icon: const Icon(Icons.clear), onPressed: () {})];
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = "";
+        },
+      ),
+    ];
   }
 
   @override
   Widget buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
     return IconButton(
-        icon: AnimatedIcon(
-            icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
-        onPressed: () {
-          Navigator.pop(context);
-        });
+      icon: const Icon(
+        Icons.arrow_back,
+      ),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     final List<Note> allNotes = Provider.of<Notes>(context)
         .allNotes
-        .where((n) => n.notesName!.startsWith(query))
+        .where((n) =>
+            (n.notesName?.toLowerCase().startsWith(query.toLowerCase()) ??
+                false) ||
+            (n.subject?.toLowerCase().startsWith(query.toLowerCase()) ??
+                false) ||
+            (n.filename?.toLowerCase().startsWith(query.toLowerCase()) ??
+                false))
         .toList();
 
-    // TODO: implement buildSuggestions
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
         title: Text(allNotes[index].notesName!),
@@ -130,15 +177,20 @@ class DataSearch extends SearchDelegate<String> {
   Widget buildSuggestions(BuildContext context) {
     final List<Note> allNotes = Provider.of<Notes>(context)
         .allNotes
-        .where((n) => n.notesName!.startsWith(query))
+        .where((n) =>
+            (n.notesName?.toLowerCase().startsWith(query.toLowerCase()) ??
+                false) ||
+            (n.subject?.toLowerCase().startsWith(query.toLowerCase()) ??
+                false) ||
+            (n.filename?.toLowerCase().startsWith(query.toLowerCase()) ??
+                false))
         .toList();
 
-    // TODO: implement buildSuggestions
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
-        title: Text(allNotes[index].notesName!),
+        title: Text(allNotes[index].notesName ?? ""),
         subtitle: Text(
-          "Subject: ${allNotes[index].subject!}",
+          "Subject: ${allNotes[index].subject ?? ""}",
         ),
       ),
       itemCount: allNotes.length,

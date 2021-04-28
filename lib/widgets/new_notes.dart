@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +18,8 @@ class NewNotes extends StatefulWidget {
 
 class _NewNotesState extends State<NewNotes> {
   bool _isLoading = false;
+  bool _isAdding = false;
+  double _uploadProgress = 0;
   String? _fileName;
   String? _fileURL;
 
@@ -71,34 +72,40 @@ class _NewNotesState extends State<NewNotes> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0.0,
+    final uploadPath = "uploads/${Provider.of<AuthService>(context).userId}";
+    final storage = firebase_storage.FirebaseStorage.instance;
+    return WillPopScope(
+      onWillPop: () async {
+        if (_fileURL != null) {
+          await storage.ref("$uploadPath/$_fileName").delete();
+        }
+        return true;
+      },
+      child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text(
-          "Upload Notes",
-          style: TextStyle(
-            fontSize: 20,
-            fontFamily: 'Montserrat',
-            fontWeight: FontWeight.w300,
-            color: Theme.of(context).textTheme.bodyText1?.color,
+        appBar: AppBar(
+          centerTitle: true,
+          elevation: 0.0,
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text(
+            "Upload Notes",
+            style: TextStyle(
+              fontSize: 20,
+              fontFamily: 'Montserrat',
+              fontWeight: FontWeight.w300,
+              color: Theme.of(context).textTheme.bodyText1?.color,
+            ),
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Theme(
-                data:
-                    Theme.of(context).copyWith(primaryColor: Colors.blueAccent),
-                child: TextFormField(
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  textInputAction: TextInputAction.next,
                   autofocus: true,
-                  style: const TextStyle(fontSize: 25),
                   controller: _notesNameController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -109,13 +116,8 @@ class _NewNotesState extends State<NewNotes> {
                     labelText: 'Title: ',
                   ),
                 ),
-              ),
-              Theme(
-                data:
-                    Theme.of(context).copyWith(primaryColor: Colors.blueAccent),
-                child: TextFormField(
-                  autofocus: true,
-                  style: const TextStyle(fontSize: 25),
+                TextFormField(
+                  textInputAction: TextInputAction.next,
                   controller: _subjectController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -126,54 +128,60 @@ class _NewNotesState extends State<NewNotes> {
                     labelText: 'Subject: ',
                   ),
                 ),
-              ),
-              Theme(
-                data:
-                    Theme.of(context).copyWith(primaryColor: Colors.blueAccent),
-                child: TextFormField(
-                  autofocus: true,
-                  style: const TextStyle(fontSize: 25),
+                TextFormField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.done,
                   controller: _notesDetailsController,
                   decoration: const InputDecoration(
                     labelText: 'Enter Details: ',
                   ),
                 ),
-              ),
-              //TODO add widget for file upload
-              Row(
-                children: [
-                  const Text("Select a file to upload: "),
-                  ElevatedButton(
+                const SizedBox(
+                  height: 40,
+                ),
+                Center(
+                  child: TextButton.icon(
                     onPressed: () async {
+                      if (_fileURL != null) {
+                        await storage.ref("$uploadPath/$_fileName").delete();
+                      }
                       final FilePickerResult? result =
                           await FilePicker.platform.pickFiles();
 
                       if (result != null) {
                         final File file = File(result.files.single.path!);
-
                         final int fileSize =
-                            await file.length(); //REturns file sie in bytes
+                            await file.length(); //Returns file size in bytes
 
                         if (fileSize < 26214400) {
                           try {
                             setState(() {
                               _isLoading = true;
                             });
-
-                            final instance =
-                                firebase_storage.FirebaseStorage.instance;
-                            await instance
-                                .ref("uploads/${file.path.split('/').last}")
+                            final firebase_storage.UploadTask uploadTask = storage
+                                .ref("$uploadPath/${file.path.split('/').last}")
                                 .putFile(file);
-                            final String downloadUrl = await instance
-                                .ref('uploads/${file.path.split('/').last}')
-                                .getDownloadURL();
-                            setState(() {
-                              _fileName = file.path.split('/').last;
-                              _fileURL = downloadUrl;
-                              _isLoading = false;
+
+                            uploadTask.snapshotEvents.listen((snapshot) async {
+                              setState(() {
+                                _uploadProgress =
+                                    snapshot.bytesTransferred.toDouble() /
+                                        snapshot.totalBytes.toDouble();
+                              });
+                              if (_uploadProgress == 1) {
+                                final String downloadUrl = await storage
+                                    .ref(
+                                        '$uploadPath/${file.path.split('/').last}')
+                                    .getDownloadURL();
+                                setState(() {
+                                  _fileName = file.path.split('/').last;
+                                  _fileURL = downloadUrl;
+                                  _isLoading = false;
+                                });
+                              }
                             });
-                          } on firebase_core.FirebaseException {
+                          } on firebase_storage.FirebaseException {
                             rethrow;
                           }
                         } else {
@@ -184,6 +192,11 @@ class _NewNotesState extends State<NewNotes> {
                           );
                         }
                       } else {
+                        setState(() {
+                          _isLoading = false;
+                          _fileName = null;
+                          _fileURL = null;
+                        });
                         _showErrorDialog(
                           context,
                           "Error",
@@ -191,57 +204,105 @@ class _NewNotesState extends State<NewNotes> {
                         );
                       }
                     },
-                    style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).accentColor,
+                    style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: Theme.of(context).accentColor,
+                      minimumSize: const Size(200, 50),
                     ),
-                    child: _isLoading
-                        ? const CircularProgressIndicator()
-                        : const Text("SELECT"),
-                  )
-                ],
-              ),
-              const Expanded(child: SizedBox()),
-              FloatingActionButton.extended(
-                heroTag: "addrequestbtn",
-                onPressed: () {
-                  setState(() {
-                    if (_formKey.currentState!.validate()) {
-                      if (widget.data == null) {
-                        Provider.of<Notes>(context, listen: false).addNote(
-                            subject: _subjectController.text,
-                            notesName: _notesNameController.text,
-                            messageType: 1,
-                            messageBody: _notesDetailsController.text,
-                            user:
-                                Provider.of<AuthService>(context, listen: false)
-                                    .userId,
-                            filename: _fileName,
-                            fileURL: _fileURL);
-                      } else {
-                        Provider.of<Notes>(context, listen: false).updateNote(
-                          id: widget.data?['id'] as String,
-                          subject: _subjectController.text,
-                          notesName: _notesNameController.text,
-                          messageBody: _notesDetailsController.text,
-                          messageType: 1,
-                          user: Provider.of<AuthService>(context, listen: false)
-                              .userId,
-                          filename: _fileName,
-                          fileUrl: _fileURL,
-                        );
-                      }
-                      Navigator.of(context).pop();
-                    }
-                  });
-                },
-                label: Text(
-                  widget.data == null ? "Upload Note" : "Update Note",
+                    label: _isLoading
+                        ? SizedBox(
+                            width: 100,
+                            child: LinearProgressIndicator(
+                              value: _uploadProgress,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                        : Text(
+                            _fileName ?? "SELECT FILE",
+                            style: const TextStyle(fontSize: 20),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                    icon: const Icon(
+                      Icons.attach_file,
+                      size: 30,
+                    ),
+                  ),
                 ),
-                icon: const Icon(Icons.add),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.blueAccent,
-              ),
-            ],
+                const Expanded(child: SizedBox()),
+                FloatingActionButton.extended(
+                  heroTag: "addNotesBtn",
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.validate()) {
+                            if (_fileURL != null) {
+                              setState(() {
+                                _isAdding = true;
+                              });
+                              if (widget.data == null) {
+                                await Provider.of<Notes>(context, listen: false)
+                                    .addNote(
+                                  subject: _subjectController.text,
+                                  notesName: _notesNameController.text,
+                                  messageType: 1,
+                                  messageBody: _notesDetailsController.text,
+                                  user: Provider.of<AuthService>(context,
+                                          listen: false)
+                                      .userId,
+                                  filename: _fileName,
+                                  fileURL: _fileURL,
+                                );
+                                setState(() {
+                                  _isAdding = false;
+                                });
+                                Navigator.of(context).pop();
+                              } else {
+                                await Provider.of<Notes>(context, listen: false)
+                                    .updateNote(
+                                  id: widget.data?['id'] as String,
+                                  subject: _subjectController.text,
+                                  notesName: _notesNameController.text,
+                                  messageBody: _notesDetailsController.text,
+                                  messageType: 1,
+                                  user: Provider.of<AuthService>(context,
+                                          listen: false)
+                                      .userId,
+                                  filename: _fileName,
+                                  fileUrl: _fileURL,
+                                );
+                                setState(() {
+                                  _isAdding = false;
+                                });
+                                Navigator.of(context).pop();
+                              }
+                            } else {
+                              _showErrorDialog(
+                                context,
+                                "Error",
+                                "A file must be selected.",
+                              );
+                            }
+                          }
+                        },
+                  label: _isAdding
+                      ? const CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        )
+                      : Text(
+                          widget.data == null ? "Send Notes" : "Update Notes",
+                        ),
+                  icon: const Icon(Icons.send),
+                  foregroundColor: Colors.white,
+                  backgroundColor: _isLoading
+                      ? Theme.of(context).disabledColor
+                      : Theme.of(context).accentColor,
+                ),
+              ],
+            ),
           ),
         ),
       ),

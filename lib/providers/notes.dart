@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:horario/providers/notification_service.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth_service.dart';
+import '../providers/notification_service.dart';
 import './auth_service.dart';
 import './note.dart';
 
@@ -16,7 +18,6 @@ class Notes with ChangeNotifier {
   final List<String> _subjects = [];
   final List<Note> _notes = [];
 
-  //Real code
   Future<void> addNote({
     String? user,
     String? notesName,
@@ -41,7 +42,6 @@ class Notes with ChangeNotifier {
       ),
     );
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    //TODO: make logic for finding group ID from user profile
     final String groupId =
         Provider.of<AuthService>(context, listen: false).getGroupId!;
     final CollectionReference notes =
@@ -94,8 +94,8 @@ class Notes with ChangeNotifier {
     _notes[index].fileUrl = fileUrl ?? _notes[index].fileUrl;
 
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    //TODO: make logic for finding group ID from user profile
-    final String groupId = Provider.of<AuthService>(context).getGroupId!;
+    final String groupId =
+        Provider.of<AuthService>(context, listen: false).getGroupId!;
     final DocumentReference c =
         firestore.collection('groups').doc(groupId).collection('chat').doc(id);
 
@@ -111,58 +111,31 @@ class Notes with ChangeNotifier {
   }
 
   Future<void> deleteNote(String id) async {
-    _notes.removeWhere((c) => c.id == id);
+    final int index = _notes.indexWhere((c) => c.id == id);
+    final FirebaseStorage storage = FirebaseStorage.instance;
+    final String uploadPath =
+        "uploads/${Provider.of<AuthService>(context, listen: false).userId}";
+    await storage.ref("$uploadPath/${_notes[index].filename}").delete();
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    //TODO: make logic for finding group ID from user profile
     final String groupId =
         Provider.of<AuthService>(context, listen: false).getGroupId!;
     final DocumentReference c =
         firestore.collection('groups').doc(groupId).collection('chat').doc(id);
     await c.delete();
+    _notes.removeAt(index);
     notifyListeners();
   }
 
-  List<Note> get groupchat {
-    return _notes;
-  }
+  List<Note> get groupChat => [..._notes];
 
-  List<String> get subjectList {
-    return _subjects;
-  }
+  List<String> get subjectList => [..._subjects];
 
-  String? currSubject;
-  // ignore: avoid_setters_without_getters
-  set currsub(String subject) {
-    currSubject = subject;
-  }
+  List<Note> subjectwiseNotes(String subject) =>
+      _notes.where((n) => n.messageType == 1 && n.subject == subject).toList();
 
-  List<Note> get subjectwiseNotes {
-    final List<Note> subjectNotes = [];
-
-    for (final Note currnote in _notes) {
-      if (currnote.subject == currSubject && currnote.messageType == 1) {
-        subjectNotes.add(currnote);
-      }
-    }
-
-    return subjectNotes;
-  }
-
-  List<Note> get allNotes {
-    final List<Note> allNotes = [];
-
-    for (final Note currnote in _notes) {
-      if (currnote.messageType == 1) {
-        allNotes.add(currnote);
-      }
-    }
-
-    return allNotes;
-  }
+  List<Note> get allNotes => _notes.where((n) => n.messageType == 1).toList();
 
   Future<void> fetchNotesFromFirestore(String groupId) async {
-    //TODO: make logic for finding group ID from user profile
-
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final CollectionReference notes =
         firestore.collection('groups').doc(groupId).collection('chat');
@@ -180,16 +153,17 @@ class Notes with ChangeNotifier {
             id: doc.id,
             subject: currSubject,
             messageType: notesData?['message_type'] as int,
-            messageBody: notesData?['message_body'] as String,
+            messageBody: notesData?['message_body'] as String?,
             notesName: notesData?['notes_name'] as String,
             sentTime: notesData?['sent_at'].toDate() as DateTime,
             user: notesData?['user'] as String,
-            filename: notesData?['filename'] asng? Stri,
+            filename: notesData?['filename'] as String?,
             fileUrl: notesData?['fileurl'] as String?,
           ),
         );
 
-        if (!_subjects.contains(currSubject)) {
+        if (!_subjects.contains(currSubject) &&
+            (notesData?['message_type'] as int) != 0) {
           _subjects.add(currSubject);
         }
       }

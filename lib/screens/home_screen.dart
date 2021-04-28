@@ -7,6 +7,7 @@ import '../widgets/new_assignment.dart';
 import '../widgets/new_class.dart';
 import '../widgets/new_notes.dart';
 import '../widgets/new_notes_request.dart';
+import './notes_by_subject_screen.dart';
 import './profile_screen.dart';
 import './tabs_screen.dart';
 
@@ -92,6 +93,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 settings.arguments as Map<String, dynamic>?;
             return MaterialPageRoute(
               builder: (context) => NewNotes(data),
+            );
+          } else if (settings.name == NotesBySubjectScreen.routeName) {
+            final String subject = (settings.arguments ?? "") as String;
+            return MaterialPageRoute(
+              builder: (context) => NotesBySubjectScreen(subject),
             );
           }
         },
