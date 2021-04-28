@@ -33,3 +33,6 @@ flutter pub get
 ```sh
 flutter run
 ```
+
+## Screenshots
+You can find screenshots of the app [here](https://docs.google.com/document/d/1vvnemhIU_kAJ0N2DUKeSlC_UP8Oj0ZOBNI7Paw71Goc/edit?usp=sharing)
