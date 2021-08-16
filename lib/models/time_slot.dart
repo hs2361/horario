@@ -1,23 +1,5 @@
 import 'package:flutter/material.dart';
 
-class Class with ChangeNotifier {
-  String id;
-  String subject;
-  String? link;
-  DateTime? deadline;
-  List<TimeSlot>? schedule;
-  Color color;
-
-  Class({
-    this.id = "",
-    this.subject = "",
-    this.link,
-    this.deadline,
-    this.schedule,
-    this.color = Colors.blueAccent,
-  });
-}
-
 class TimeSlot {
   late int weekday;
   late TimeOfDay start;

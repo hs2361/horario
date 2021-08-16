@@ -3,7 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 
-import '../providers/class.dart';
+import '../models/time_slot.dart';
 import '../providers/classes.dart';
 import '../screens/home_screen.dart';
 

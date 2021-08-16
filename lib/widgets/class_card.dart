@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../providers/class.dart';
+import '../models/class.dart';
 import '../providers/classes.dart';
 import '../widgets/new_class.dart';
-import './new_assignment.dart';
+import 'new_assignment.dart';
 
 // ignore: must_be_immutable
 class ClassCard extends StatelessWidget {

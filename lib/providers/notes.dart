@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth_service.dart';
-import '../providers/notification_service.dart';
-import './auth_service.dart';
-import './note.dart';
+import '../models/note.dart';
+import 'auth_service.dart';
+import 'notification_service.dart';
 
 class Notes with ChangeNotifier {
   BuildContext context;
@@ -22,7 +21,7 @@ class Notes with ChangeNotifier {
     String? user,
     String? notesName,
     DateTime? currTime,
-    int? messageType,
+    bool isRequest = false,
     String? messageBody,
     String? subject,
     String? filename,
@@ -34,7 +33,7 @@ class Notes with ChangeNotifier {
         user: user,
         notesName: notesName,
         sentTime: currTime,
-        messageType: messageType,
+        isRequest: isRequest,
         messageBody: messageBody,
         subject: subject,
         filename: filename,
@@ -50,7 +49,7 @@ class Notes with ChangeNotifier {
     try {
       final DocumentReference notesDoc = await notes.add({
         'message_body': messageBody,
-        'message_type': messageType,
+        'is_request': isRequest,
         'user': user,
         'notes_name': notesName,
         'sent_at': DateTime.now(),
@@ -60,10 +59,9 @@ class Notes with ChangeNotifier {
       });
       _notes.last.id = notesDoc.id;
 
-      final List<String> actions = ["Requested", "Uploaded"];
       await Provider.of<NotificationService>(context, listen: false)
           .sendGroupNotification(
-        title: "Notes for $notesName ${actions[messageType!]}",
+        title: "Notes for $notesName ${isRequest ? "Requested" : "Uploaded"}",
         body: "Subject: $subject",
         token: (await Provider.of<AuthService>(context, listen: false).token) ??
             "",
@@ -79,7 +77,7 @@ class Notes with ChangeNotifier {
     required String id,
     String? user,
     String? notesName,
-    int? messageType,
+    bool isRequest = false,
     String? messageBody,
     String? subject,
     String? filename,
@@ -87,7 +85,7 @@ class Notes with ChangeNotifier {
   }) async {
     final int index = _notes.indexWhere((c) => c.id == id);
     _notes[index].notesName = notesName ?? _notes[index].notesName;
-    _notes[index].messageType = messageType ?? _notes[index].messageType;
+    _notes[index].isRequest = isRequest;
     _notes[index].messageBody = messageBody ?? _notes[index].messageBody;
     _notes[index].subject = subject ?? _notes[index].subject;
     _notes[index].filename = filename ?? _notes[index].filename;
@@ -101,7 +99,7 @@ class Notes with ChangeNotifier {
 
     await c.update({
       'message_body': messageBody ?? _notes[index].messageBody,
-      'message_type': messageType ?? _notes[index].messageType,
+      'is_request': isRequest,
       'notes_name': notesName ?? _notes[index].notesName,
       'subject': subject ?? _notes[index].subject,
       'filename': filename ?? _notes[index].filename,
@@ -131,9 +129,9 @@ class Notes with ChangeNotifier {
   List<String> get subjectList => [..._subjects];
 
   List<Note> subjectwiseNotes(String subject) =>
-      _notes.where((n) => n.messageType == 1 && n.subject == subject).toList();
+      _notes.where((n) => n.isRequest && n.subject == subject).toList();
 
-  List<Note> get allNotes => _notes.where((n) => n.messageType == 1).toList();
+  List<Note> get allNotes => _notes.where((n) => n.isRequest).toList();
 
   Future<void> fetchNotesFromFirestore(String groupId) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -152,7 +150,7 @@ class Notes with ChangeNotifier {
           Note(
             id: doc.id,
             subject: currSubject,
-            messageType: notesData?['message_type'] as int,
+            isRequest: notesData?['is_request'] as bool,
             messageBody: notesData?['message_body'] as String?,
             notesName: notesData?['notes_name'] as String,
             sentTime: notesData?['sent_at'].toDate() as DateTime,
@@ -163,7 +161,7 @@ class Notes with ChangeNotifier {
         );
 
         if (!_subjects.contains(currSubject) &&
-            (notesData?['message_type'] as int) != 0) {
+            (notesData?['is_request'] as bool)) {
           _subjects.add(currSubject);
         }
       }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/note.dart';
 import '../providers/auth_service.dart';
-import '../providers/note.dart';
 import '../providers/notes.dart';
 import '../widgets/group_chat_card.dart';
 import '../widgets/new_notes.dart';

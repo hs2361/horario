@@ -3,14 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './providers/auth_service.dart';
-import './providers/class.dart';
-import './providers/classes.dart';
-import './providers/note.dart';
-import './providers/notes.dart';
-import './providers/notification_service.dart';
-import './screens/auth_screen.dart';
-import './screens/home_screen.dart';
+import 'providers/auth_service.dart';
+import 'providers/classes.dart';
+import 'providers/notes.dart';
+import 'providers/notification_service.dart';
+import 'screens/auth_screen.dart';
+import 'screens/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,13 +64,7 @@ class _MyAppState extends State<MyApp> {
           create: (_) => AuthService(FirebaseAuth.instance),
         ),
         ChangeNotifierProvider(
-          create: (_) => Class(),
-        ),
-        ChangeNotifierProvider(
           create: (_) => NotificationService(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => Note(),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Notes(ctx),

@@ -246,7 +246,6 @@ class _NewNotesState extends State<NewNotes> {
                                     .addNote(
                                   subject: _subjectController.text,
                                   notesName: _notesNameController.text,
-                                  messageType: 1,
                                   messageBody: _notesDetailsController.text,
                                   user: Provider.of<AuthService>(context,
                                           listen: false)
@@ -265,7 +264,6 @@ class _NewNotesState extends State<NewNotes> {
                                   subject: _subjectController.text,
                                   notesName: _notesNameController.text,
                                   messageBody: _notesDetailsController.text,
-                                  messageType: 1,
                                   user: Provider.of<AuthService>(context,
                                           listen: false)
                                       .userId,

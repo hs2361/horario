@@ -8,10 +8,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
+import '../models/note.dart';
 import '../providers/auth_service.dart';
-import '../providers/note.dart';
 import '../providers/notes.dart';
-import './new_notes.dart';
+import 'new_notes.dart';
 
 class GroupChatCard extends StatefulWidget {
   // ignore: non_constant_identifier_names
@@ -115,7 +115,7 @@ class _GroupChatCardState extends State<GroupChatCard> {
                   borderRadius: BorderRadius.circular(10),
                   color: widget.curr_chat_msg.user == currUser
                       ? Theme.of(context).accentColor
-                      : Color(0xff363636),
+                      : const Color(0xff363636),
                 ),
                 padding: const EdgeInsets.symmetric(
                   vertical: 10,
@@ -126,7 +126,7 @@ class _GroupChatCardState extends State<GroupChatCard> {
                   children: [
                     Text(
                       //TYPE 0 is request type 1 is Upload
-                      (widget.curr_chat_msg.messageType == 0)
+                      (widget.curr_chat_msg.isRequest == 0)
                           ? "Request for ${widget.curr_chat_msg.notesName ?? ""} notes"
                           : widget.curr_chat_msg.notesName ?? "",
                       style: TextStyle(
@@ -159,7 +159,7 @@ class _GroupChatCardState extends State<GroupChatCard> {
                         ),
                       ),
                     ),
-                    if (widget.curr_chat_msg.messageType == 1)
+                    if (widget.curr_chat_msg.isRequest == 1)
                       InkWell(
                         onTap: () async {
                           final String? currLink = widget.curr_chat_msg.fileUrl;

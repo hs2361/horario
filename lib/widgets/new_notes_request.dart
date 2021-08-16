@@ -96,7 +96,7 @@ class _NewNotesRequestState extends State<NewNotesRequest> {
                     await Provider.of<Notes>(context, listen: false).addNote(
                       subject: _subjectController.text,
                       notesName: _notesNameController.text,
-                      messageType: 0,
+                      isRequest: true,
                       messageBody: _notesDetailsController.text,
                       user: userId,
                     );

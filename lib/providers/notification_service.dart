@@ -9,7 +9,8 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 
-import './class.dart';
+import '../models/class.dart';
+import '../models/time_slot.dart';
 
 class NotificationService with ChangeNotifier {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -102,6 +103,7 @@ class NotificationService with ChangeNotifier {
               importance: Importance.max,
               priority: Priority.high,
               showWhen: false,
+              color: _class.color,
             ),
           ),
           androidAllowWhileIdle: true,
@@ -131,6 +133,7 @@ class NotificationService with ChangeNotifier {
             importance: Importance.max,
             priority: Priority.high,
             showWhen: false,
+            color: _class.color,
           ),
         ),
         androidAllowWhileIdle: true,

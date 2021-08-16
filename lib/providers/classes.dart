@@ -3,65 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../models/class.dart';
+import '../models/time_slot.dart';
 import '../providers/auth_service.dart';
 import '../providers/notification_service.dart';
-import './class.dart';
 
 class Classes with ChangeNotifier {
   BuildContext context;
   NotificationService? notificationService;
   Classes(this.context, this.notificationService);
-
-  //dummy data for testing purposes
-  // final List<Class> _classes = [
-  //   Class(
-  //     subject: "Homework",
-  //     deadline: DateTime(2021, 3, 31),
-  //     color: Colors.green,
-  //   ),
-  //   Class(
-  //       subject: "Physics",
-  //       color: Colors.pink,
-  //       link: "http://www.google.com",
-  //       schedule: [
-  //         TimeSlot(
-  //           weekday: 1,
-  //           start: const TimeOfDay(hour: 10, minute: 0),
-  //           end: const TimeOfDay(hour: 12, minute: 0),
-  //         ),
-  //         TimeSlot(
-  //           weekday: 3,
-  //           start: const TimeOfDay(hour: 10, minute: 0),
-  //           end: const TimeOfDay(hour: 12, minute: 0),
-  //         ),
-  //         TimeSlot(
-  //           weekday: 6,
-  //           start: const TimeOfDay(hour: 10, minute: 0),
-  //           end: const TimeOfDay(hour: 12, minute: 0),
-  //         ),
-  //       ]),
-  //   Class(
-  //     subject: "Chemistry",
-  //     color: Colors.purple,
-  //     schedule: [
-  //       TimeSlot(
-  //         weekday: 1,
-  //         start: const TimeOfDay(hour: 13, minute: 0),
-  //         end: const TimeOfDay(hour: 15, minute: 0),
-  //       ),
-  //       TimeSlot(
-  //         weekday: 2,
-  //         start: const TimeOfDay(hour: 15, minute: 0),
-  //         end: const TimeOfDay(hour: 16, minute: 0),
-  //       ),
-  //       TimeSlot(
-  //         weekday: 6,
-  //         start: const TimeOfDay(hour: 9, minute: 0),
-  //         end: const TimeOfDay(hour: 10, minute: 0),
-  //       )
-  //     ],
-  //   )
-  // ];
 
   final List<Class> _classes = [];
   List<Class> get classes => [..._classes];

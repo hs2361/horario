@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/class.dart';
+import '../models/class.dart';
 import '../providers/classes.dart';
 import '../widgets/class_card.dart';
 import '../widgets/new_assignment.dart';

@@ -7,9 +7,9 @@ import '../widgets/new_assignment.dart';
 import '../widgets/new_class.dart';
 import '../widgets/new_notes.dart';
 import '../widgets/new_notes_request.dart';
-import './notes_by_subject_screen.dart';
-import './profile_screen.dart';
-import './tabs_screen.dart';
+import 'notes_by_subject_screen.dart';
+import 'profile_screen.dart';
+import 'tabs_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/';

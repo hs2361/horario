@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/note.dart';
 import '../providers/auth_service.dart';
-import '../providers/note.dart';
 import '../providers/notes.dart';
 import 'notes_by_subject_screen.dart';
 

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_service.dart';
-import './group_screen.dart';
-import './notes_screen.dart';
-import './profile_screen.dart';
-import './schedule_screen.dart';
+import 'group_screen.dart';
+import 'notes_screen.dart';
+import 'profile_screen.dart';
+import 'schedule_screen.dart';
 
 // Screen that displays all the tabs
 class TabsScreen extends StatefulWidget {
