@@ -185,15 +185,15 @@ class Classes with ChangeNotifier {
       final firestoreClasses = (await classes.get()).docs;
       for (final QueryDocumentSnapshot doc in firestoreClasses) {
         final classData = doc.data();
-        final schedule = classData?['schedule'] as List<dynamic>?;
+        final schedule = classData['schedule'] as List<dynamic>?;
         _classes.add(
           Class(
             id: doc.id,
-            subject: classData?['subject'] as String,
-            link: classData?['link'] as String?,
-            color: Color(classData?['color'] as int),
-            deadline: classData?['deadline'] != null
-                ? (classData?['deadline'] as Timestamp).toDate()
+            subject: classData['subject'] as String,
+            link: classData['link'] as String?,
+            color: Color(classData['color'] as int),
+            deadline: classData['deadline'] != null
+                ? (classData['deadline'] as Timestamp).toDate()
                 : null,
             // ignore: prefer_null_aware_operators
             schedule: schedule != null
