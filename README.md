@@ -21,7 +21,7 @@ If you wish to set-up the project locally, follow these instructions:
 * Create a new [Firebase project](https://console.firebase.google.com)
 * Add an Android app to the project, with the package name "com.horario.horario"
 * Download the google-services.json file and add it to horario/android/app/
-* In firebase of project (Firestore Database -> Rules), edit the Rules to this: 
+* Edit the Firestore rules (Firestore Database -> Rules) to allow only authenticated users to read/write data: 
 
 ```
     rules_version = '2';
