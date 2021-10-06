@@ -145,23 +145,23 @@ class Notes with ChangeNotifier {
       final firestoreNotes = (await notes.get()).docs;
       for (final QueryDocumentSnapshot doc in firestoreNotes) {
         final notesData = doc.data();
-        final String currSubject = notesData?['subject'] as String;
+        final String currSubject = notesData['subject'] as String;
         _notes.add(
           Note(
             id: doc.id,
             subject: currSubject,
-            isRequest: notesData?['is_request'] as bool,
-            messageBody: notesData?['message_body'] as String?,
-            notesName: notesData?['notes_name'] as String,
-            sentTime: notesData?['sent_at'].toDate() as DateTime,
-            user: notesData?['user'] as String,
-            filename: notesData?['filename'] as String?,
-            fileUrl: notesData?['fileurl'] as String?,
+            isRequest: notesData['is_request'] as bool,
+            messageBody: notesData['message_body'] as String?,
+            notesName: notesData['notes_name'] as String,
+            sentTime: notesData['sent_at'].toDate() as DateTime,
+            user: notesData['user'] as String,
+            filename: notesData['filename'] as String?,
+            fileUrl: notesData['fileurl'] as String?,
           ),
         );
 
         if (!_subjects.contains(currSubject) &&
-            (notesData?['is_request'] as bool)) {
+            (notesData['is_request'] as bool)) {
           _subjects.add(currSubject);
         }
       }
