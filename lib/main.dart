@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:horario/providers/user_service.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/auth_service.dart';
@@ -56,51 +57,39 @@ class _MyAppState extends State<MyApp> {
     ),
   );
 
+  bool _hasVerifiedEmail(AsyncSnapshot<User?> snapshot) =>
+      snapshot.hasData && snapshot.data!.emailVerified;
+
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthService(FirebaseAuth.instance),
+  Widget build(BuildContext context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => AuthService(FirebaseAuth.instance),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => UserService(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => NotificationService(),
+          ),
+          ChangeNotifierProvider(
+            create: (ctx) => Notes(ctx),
+          ),
+          ChangeNotifierProvider(
+            create: (ctx) => Classes(ctx, null),
+          ),
+          ChangeNotifierProxyProvider<NotificationService, Classes>(
+            create: (ctx) => Classes(ctx, null),
+            update: (ctx, notificationService, previous) =>
+                Classes(ctx, notificationService),
+          )
+        ],
+        child: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) => MaterialApp(
+            theme: theme,
+            home: _hasVerifiedEmail(snapshot) ? HomeScreen() : LoginScreen(),
+          ),
         ),
-        ChangeNotifierProvider(
-          create: (_) => NotificationService(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => Notes(ctx),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => Classes(ctx, null),
-        ),
-        ChangeNotifierProxyProvider<NotificationService, Classes>(
-          create: (ctx) => Classes(ctx, null),
-          update: (ctx, notificationService, previous) =>
-              Classes(ctx, notificationService),
-        )
-      ],
-      child: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return MaterialApp(
-              theme: theme,
-              home: LoginScreen(),
-            );
-          } else {
-            if (snapshot.data?.emailVerified ?? false) {
-              return MaterialApp(
-                theme: theme,
-                home: HomeScreen(),
-              );
-            } else {
-              return MaterialApp(
-                theme: theme,
-                home: LoginScreen(),
-              );
-            }
-          }
-        },
-      ),
-    );
-  }
+      );
 }

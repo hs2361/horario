@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:horario/models/auth_user.dart';
 
 // ignore: constant_identifier_names
 enum AuthState { SignedIn, NotVerified, SignedUp, SignedOut }
@@ -44,21 +45,17 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  Future<AuthState> emailSignUp({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
+  Future<AuthState> emailSignUp(AuthUser authUser) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: authUser.email ?? "",
+        password: authUser.password ?? "",
       );
       final User? user = FirebaseAuth.instance.currentUser;
       if (user != null && !user.emailVerified) {
         await user.sendEmailVerification();
       }
-      user?.updateProfile(displayName: name);
+      user?.updateProfile(displayName: authUser.name);
       return AuthState.SignedUp;
     } on FirebaseAuthException {
       rethrow;

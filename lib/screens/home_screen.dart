@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:horario/providers/user_service.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_service.dart';
@@ -66,7 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         routes: {
           HomeScreen.routeName: (_) => const TabsScreen(0),
-          ProfileScreen.routeName: (_) => ProfileScreen(auth),
+          ProfileScreen.routeName: (_) => Consumer<UserService>(
+                builder: (context, userService, _) =>
+                    ProfileScreen(auth, userService),
+              ),
           NewNotesRequest.routeName: (_) => NewNotesRequest(),
         },
         onGenerateRoute: (settings) {
