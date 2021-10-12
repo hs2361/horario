@@ -42,7 +42,8 @@ dependencies:
   provider: ^5.0.0
   time_range_picker: ^2.0.1
   url_launcher: ^6.0.3
-
+  login_fresh: ^1.0.8
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

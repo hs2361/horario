@@ -18,7 +18,10 @@ class NotificationService with ChangeNotifier {
     'high_importance_channel', // id
     'High Importance Notifications', // title
     'This channel is used for important notifications.', // description
+    sound: RawResourceAndroidNotificationSound('digitalalarm'),
+    playSound: true,
     importance: Importance.high,
+    // priority: Priority.high,
   );
 
   Future<void> initializeService() async {
