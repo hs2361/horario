@@ -49,11 +49,11 @@ class BirthdaySelectorState extends State<BirthdaySelector> {
         child: child ?? const CircularProgressIndicator(),
       ),
     );
-    if (widget.onDateDialogClosed != null) {
-      widget.onDateDialogClosed!(birthDay);
-    }
     widget.nodeToFocusNext?.requestFocus();
-    setState(() => dateTime = birthDay);
+    if (birthDay != null) {
+      widget.onDateDialogClosed?.call(birthDay);
+      setState(() => dateTime = birthDay);
+    }
   }
 
   Widget _dateButton() {

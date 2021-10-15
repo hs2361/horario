@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class Profile {
   String? id;
   String? name;
   String? biography;
   DateTime? birthday;
 
-  User({this.id, this.name, this.biography, this.birthday});
+  Profile({this.id, this.name, this.biography, this.birthday});
 
   Map<String, dynamic> toMap() =>
       {"id": id, "name": name, "biography": biography, "birthday": birthday};
 
-  User.from(DocumentSnapshot snapshot) {
+  Profile.from(DocumentSnapshot snapshot) {
     final Map<String, dynamic>? map = snapshot.data();
     id = map?["id"] as String?;
     name = map?["name"] as String?;
@@ -19,7 +19,7 @@ class User {
     birthday = (map?["birthday"] as Timestamp?)?.toDate();
   }
 
-  User clone() => User(
+  Profile clone() => Profile(
         id: id,
         name: name,
         biography: biography,

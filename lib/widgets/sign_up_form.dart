@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
 import 'package:flutter/material.dart';
-import 'package:horario/components/birthday_selector.dart';
-import 'package:horario/components/input_field.dart';
 import 'package:horario/models/auth_user.dart';
-import 'package:horario/providers/user_service.dart';
-import 'package:intl/intl.dart';
+import 'package:horario/widgets/birthday_selector.dart';
+import 'package:horario/widgets/input_field.dart';
 import 'package:provider/provider.dart';
 
 import '../exceptions/firebase_auth_exception_codes.dart';
@@ -145,7 +143,7 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
       );
 
-  Widget _getSingUpButton() => _isLoading
+  Widget _getSignUpButton() => _isLoading
       ? const CircularProgressIndicator()
       : ElevatedButton(
           onPressed: _submit,
@@ -172,10 +170,8 @@ class _SignUpFormState extends State<SignUpForm> {
     });
     try {
       await Provider.of<AuthService>(context, listen: false).emailSignUp(_user);
-      _user.id = Provider.of<AuthService>(context, listen: false).userId;
-      await Provider.of<UserService>(context, listen: false).updateUser(_user);
-      _showErrorDialog("Verify your email",
-          "We have just sent you a verification email. Please verify your email before and then sign in");
+      _showErrorDialog(
+          "Verify your email", "Please verify your email before signing in");
     } on FirebaseAuthException catch (error) {
       final String errorMessage = getMessageFromErrorCode(error);
       _showErrorDialog("Something went wrong", errorMessage);
@@ -222,7 +218,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ),
-            _getSingUpButton(),
+            _getSignUpButton(),
           ],
         ),
       ),

@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
 import 'package:flutter/material.dart';
-import 'package:horario/components/bio_input_field.dart';
-import 'package:horario/components/birthday_selector.dart';
-import 'package:horario/components/input_field.dart';
-import 'package:horario/models/user.dart';
-import 'package:horario/providers/user_service.dart';
+import 'package:horario/models/profile.dart';
+import 'package:horario/widgets/bio_input_field.dart';
+import 'package:horario/widgets/birthday_selector.dart';
 import 'package:provider/provider.dart';
+
 import '../exceptions/firebase_auth_exception_codes.dart';
 import '../providers/auth_service.dart';
 import '../widgets/app_bar.dart';
@@ -13,9 +12,8 @@ import '../widgets/app_bar.dart';
 class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile-screen';
   final AuthService auth;
-  final UserService userService;
 
-  const ProfileScreen(this.auth, this.userService);
+  const ProfileScreen(this.auth);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -33,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isEditModeEnabled = false;
 
   late String photoUrl;
-  User? user;
+  Profile? profile;
 
   void _showErrorDialog(String title, String message) {
     showDialog(
@@ -97,10 +95,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
     setState(() => _isLoading = true);
-    user!.name = _nameInputController.text;
-    user!.biography = _bioInputController.text;
-    await widget.userService.updateUser(user!);
-    await widget.auth.updateName(user!.name!);
+    profile!.name = _nameInputController.text;
+    profile!.biography = _bioInputController.text;
+    await widget.auth.updateProfile(profile!);
     _toggleEditingMode();
 
     setState(() {
@@ -114,18 +111,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _updateBirthdayField() {
-    _birthdayKey.currentState?.updateBirthday(user!.birthday);
+    _birthdayKey.currentState?.updateBirthday(profile!.birthday);
   }
 
   void _cancelEdit() {
     _toggleEditingMode();
     setState(() {
-      user = widget.userService.user;
+      profile = widget.auth.profile;
       _hasValidName = true;
     });
 
-    _bioInputController.text = user!.biography ?? "";
-    _nameInputController.text = user!.name!;
+    _bioInputController.text = profile!.biography ?? "";
+    _nameInputController.text = profile!.name!;
     _updateBirthdayField();
   }
 
@@ -173,11 +170,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    widget.userService.loadUser(widget.auth).then((user) {
-      _nameInputController.text = user.name!;
-      _bioInputController.text = user.biography ?? "";
+    widget.auth.fetchProfile().then((profile) {
+      _nameInputController.text = profile.name!;
+      _bioInputController.text = profile.biography ?? "";
       setState(() {
-        this.user = user;
+        this.profile = profile;
         _isLoading = false;
       });
       _updateBirthdayField();
@@ -245,12 +242,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: BirthdaySelector(
                       _birthdayFocusNode,
-                      user?.birthday,
+                      profile?.birthday,
                       _bioFocusNode,
                       globalKey: _birthdayKey,
                       clickable: !_isReadOnly(),
                       onDateDialogClosed: (birthday) =>
-                          user?.birthday = birthday,
+                          profile?.birthday = birthday,
                     ),
                   ),
                   Container(

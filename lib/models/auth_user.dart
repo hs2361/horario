@@ -1,6 +1,6 @@
-import 'package:horario/models/user.dart';
+import 'package:horario/models/profile.dart';
 
-class AuthUser extends User {
+class AuthUser extends Profile {
   String? email;
   String? password;
 

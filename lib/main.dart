@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:horario/providers/user_service.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/auth_service.dart';
@@ -65,9 +64,6 @@ class _MyAppState extends State<MyApp> {
         providers: [
           ChangeNotifierProvider(
             create: (_) => AuthService(FirebaseAuth.instance),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => UserService(),
           ),
           ChangeNotifierProvider(
             create: (_) => NotificationService(),

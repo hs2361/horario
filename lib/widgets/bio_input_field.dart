@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:horario/components/input_field.dart';
+import 'package:horario/widgets/input_field.dart';
 
 class BioInputField extends StatelessWidget {
   final String label;
