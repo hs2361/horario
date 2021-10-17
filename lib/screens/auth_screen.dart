@@ -214,59 +214,65 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget widgetLoginFreshUserAndPassword() {
-    return LoginFreshUserAndPassword(
-      callLogin: (
-        BuildContext _context,
-        Function isRequest,
-        String user,
-        String password,
-      ) {
-        isRequest(true);
+    return Theme(
+      data: ThemeData(hintColor: Colors.black),
+      child: LoginFreshUserAndPassword(
+        callLogin: (
+          BuildContext _context,
+          Function isRequest,
+          String user,
+          String password,
+        ) {
+          isRequest(true);
 
-        // ignore: prefer_const_constructors
-        Future.delayed(Duration(seconds: 2), () {
-          print('-------------- function call----------------');
-          print(user);
-          _authData['email'] = user;
-          _authData['password'] = password;
-          // print(password);
-          print('--------------   end call   ----------------');
-          isRequest(false);
+          // ignore: prefer_const_constructors
+          Future.delayed(Duration(seconds: 2), () {
+            print('-------------- function call----------------');
+            print(user);
+            _authData['email'] = user;
+            _authData['password'] = password;
+            // print(password);
+            print('--------------   end call   ----------------');
+            isRequest(false);
 
-          _submit();
-        });
-      },
-      logo: 'assets/images/horario.jpg',
-      backgroundColor: Colors.black,
-      isFooter: false,
-      widgetFooter: widgetFooter(),
-      isResetPassword: true,
-      widgetResetPassword: widgetResetPassword(),
-      isSignUp: true,
-      signUp: widgetLoginFreshSignUp(),
+            _submit();
+          });
+        },
+        logo: 'assets/images/horario.jpg',
+        backgroundColor: Colors.black,
+        isFooter: false,
+        widgetFooter: widgetFooter(),
+        isResetPassword: true,
+        widgetResetPassword: widgetResetPassword(),
+        isSignUp: true,
+        signUp: widgetLoginFreshSignUp(),
+      ),
     );
   }
 
   Widget widgetResetPassword() {
-    return LoginFreshResetPassword(
-      backgroundColor: Colors.black,
-      logo: 'assets/images/horario.jpg',
-      funResetPassword:
-          (BuildContext _context, Function isRequest, String email) {
-        isRequest(true);
+    return Theme(
+      data: ThemeData(hintColor: Colors.black),
+      child: LoginFreshResetPassword(
+        backgroundColor: Colors.black,
+        logo: 'assets/images/horario.jpg',
+        funResetPassword:
+            (BuildContext _context, Function isRequest, String email) {
+          isRequest(true);
 
-        // ignore: prefer_const_constructors
-        Future.delayed(Duration(seconds: 2), () {
-          // print('-------------- function call----------------');
-          // print(email);
-          // print('--------------   end call   ----------------');
-          _authData[email] = email;
-          _recoverPassword();
-          isRequest(false);
-        });
-      },
-      isFooter: false,
-      widgetFooter: widgetFooter(),
+          // ignore: prefer_const_constructors
+          Future.delayed(Duration(seconds: 2), () {
+            // print('-------------- function call----------------');
+            // print(email);
+            // print('--------------   end call   ----------------');
+            _authData[email] = email;
+            _recoverPassword();
+            isRequest(false);
+          });
+        },
+        isFooter: false,
+        widgetFooter: widgetFooter(),
+      ),
     );
   }
 
@@ -281,30 +287,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget widgetLoginFreshSignUp() {
-    return LoginFreshSignUp(
-        isFooter: false,
-        widgetFooter: widgetFooter(),
-        logo: 'assets/images/horario.jpg',
-        backgroundColor: Colors.black,
-        funSignUp: (
-          BuildContext _context,
-          Function isRequest,
-          SignUpModel signUpModel,
-        ) {
-          isRequest(true);
-          Future.delayed(
-            Duration(seconds: 2),
-            () {
-              // print(signUpModel.email);
+    return Theme(
+      data: ThemeData(hintColor: Colors.black),
+      child: LoginFreshSignUp(
+          isFooter: false,
+          widgetFooter: widgetFooter(),
+          logo: 'assets/images/horario.jpg',
+          backgroundColor: Colors.black,
+          funSignUp: (
+            BuildContext _context,
+            Function isRequest,
+            SignUpModel signUpModel,
+          ) {
+            isRequest(true);
+            Future.delayed(
+              Duration(seconds: 2),
+              () {
+                // print(signUpModel.email);
 
-              _authDataSingUp["email"] = signUpModel.email;
-              _authDataSingUp["name"] = signUpModel.name;
-              _authDataSingUp["email"] = signUpModel.password;
+                _authDataSingUp["email"] = signUpModel.email;
+                _authDataSingUp["name"] = signUpModel.name;
+                _authDataSingUp["email"] = signUpModel.password;
 
-              isRequest(false);
-              _submitSignUp();
-            },
-          );
-        });
+                isRequest(false);
+                _submitSignUp();
+              },
+            );
+          }),
+    );
   }
 }
