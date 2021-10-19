@@ -43,9 +43,6 @@ dependencies:
   time_range_picker: ^2.0.1
   url_launcher: ^6.0.3
 
-dependency_overrides:
-  flutter_colorpicker: ^0.6.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
