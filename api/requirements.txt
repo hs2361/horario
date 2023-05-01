@@ -1,4 +1,4 @@
-Flask==1.1.2
+Flask==2.3.2
 requests==2.22.0
 firebase_admin==4.5.3
 flask_firebase_admin==0.2.3
