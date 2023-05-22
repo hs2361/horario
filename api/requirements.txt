@@ -1,5 +1,5 @@
 Flask==1.1.2
-requests==2.22.0
+requests==2.31.0
 firebase_admin==4.5.3
 flask_firebase_admin==0.2.3
 gunicorn==20.1.0
